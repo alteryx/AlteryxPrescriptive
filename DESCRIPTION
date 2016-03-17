@@ -1,0 +1,28 @@
+Package: AlteryxPrescriptive
+Type: Package
+Title: Simulation and Optimization Tools in Alteryx
+Version: 0.1.0
+Authors@R: c(
+    person("Ramnath", "Vaidyanathan", role = c("aut", "cre"), email = "ramnath@alteryx.com"),
+    person("Kuo", "Liu", role = "aut"),
+    person("Dylan", "Blanchard", role = "aut"),
+    person("Chris", "Freeman", role = "aut"),
+    person("Dan", "Putler", role = "aut"),
+    person(family = "Alteryx", role = "cph")
+   )
+Description: This package contains code that support the simulation and optimization tools
+  in Alteryx.
+License: GPL-3
+LazyData: TRUE
+RoxygenNote: 5.0.1
+Imports:
+  magrittr,
+  stringr,
+  Rglpk,
+  quadprog,
+  ROI,
+  ROI.plugin.glpk,
+  ROI.plugin.quadprog,
+  slam
+Suggests:
+  testthat
