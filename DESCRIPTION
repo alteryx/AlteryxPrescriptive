@@ -25,4 +25,5 @@ Imports:
   ROI.plugin.quadprog,
   slam
 Suggests:
-  testthat
+  testthat,
+  gurobi
