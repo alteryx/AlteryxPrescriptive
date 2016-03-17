@@ -26,7 +26,6 @@ ROI_solve_gurobi <- function(lp){
 solveModel <- function(x, solver = 'glpk'){
   if (solver == 'gurobi'){
     if (requireNamespace('gurobi')){
-      library(gurobi)
       ROI_solve_gurobi(x)
     }
   } else {
