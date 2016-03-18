@@ -1,18 +1,19 @@
 #' Convert model files to ROI-compatible model objects
 #'
-#' Read and parse a CPLEX model file (including quadratic objectives).
+#' Read and parse a model file (including quadratic objectives).
 #' @param filePath The path to the model file
 #' @param type File type. Defaults to "CPLEX_LP"
 #' @return An ROI-compatible model object
 #' @export
 readModelFile <- function(filePath, type = "CPLEX_LP") {
-  file <- readCPLEXFile(filePath)
+  file <- readFileContents(filePath)
   if (!isQP(file)) {
     message("No quadratic elements detected. Defaulting to Rglpk_read_file.\n")
     return(Rglpk_read_file(filePath, type = type))
   }
   # R CMD CHECK complains about this!!!!
-  #list[model, vecMap] <- processQP(file, type)
+  # fyi, this is apparently a common issue: http://stackoverflow.com/a/23476834/5870180
+  # list[model, vecMap] <- processQP(file, type)
   res <- processQP(file, type)
   qMat <- createQMatrix(res$vecMap)
   return(createQPModel(res$model, qMat))
@@ -26,9 +27,15 @@ createQPModel <- function(model, qMat) {
   return(model)
 }
 
-readCPLEXFile <- function(filePath) {
-  if (!isLPFile(filePath)) {
-    stop("You must use a CPLEX LP model file (ending in '.lp')")
+readFileContents <- function(filePath) {
+  if (!isSupportedFormat(filePath)) {
+    stop(
+      paste(
+        "You must use one of the following file formats: ",
+        paste("\t", getValidFormats(), collapse="\n"),
+        sep = "\n"
+      )
+    )
   }
   file <- readChar(normalizePath(filePath), file.info(filePath)$size)
   return(file)

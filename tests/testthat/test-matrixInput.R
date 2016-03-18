@@ -44,6 +44,7 @@ test_that("Solves matrix inputs correctly", {
 
 test_that("Gurobi solves matrix inputs correctly", {
   skip_on_travis()
+  skip_if_not_installed('gurobi')
   library(gurobi)
   payload$config$solver <- 'gurobi'
   res <- capture.output(sol <- AlteryxSolve(payload))
