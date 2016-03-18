@@ -22,6 +22,7 @@ test_that('Quadprog solves Simple QP', {
 
 test_that('Gurobi solves Simple QP', {
   skip_on_travis()
+  skip_if_not_installed('gurobi')
   # I have no idea why this line is required while testing.
   library(gurobi)
   payload$config$filePath = getSampleData('simple_qp.lp')
@@ -32,6 +33,7 @@ test_that('Gurobi solves Simple QP', {
 
 test_that('Gurobi solves Complex QP', {
   skip_on_travis()
+  skip_if_not_installed('gurobi')
   library(gurobi)
   payload$config$filePath = getSampleData('qp_complex.lp')
   payload$config$solver = 'gurobi'
