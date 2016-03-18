@@ -42,7 +42,7 @@ test_that('Gurobi solves Complex QP', {
 })
 
 
-test_that('Quadprog errors solving Comples QP', {
+test_that('Quadprog errors solving Complex QP', {
   payload$config$filePath = getSampleData('qp_complex.lp')
   payload$config$solver = 'quadprog'
   sol <- AlteryxSolve(payload)

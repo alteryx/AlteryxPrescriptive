@@ -30,5 +30,3 @@ test_that("Cell Tower LP is solved correctly by gurobi", {
   out = capture.output(sol <- AlteryxSolve(payload))
   expect_equal(sol$objval, 7051)
 })
-
-

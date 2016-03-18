@@ -1,4 +1,4 @@
-context("fileInput-MPS")
+context("fileInput-MathProg")
 
 config <- list(
   inputMode = "file",
@@ -12,7 +12,7 @@ config <- list(
 payload <- list(config = config, inputs = NULL)
 
 
-test_that("Cell Tower LP is solved correctly by glpk", {
+test_that("Basic LP is solved correctly by glpk", {
   payload$config$filePath = getSampleData("lpTwoVars.mod")
   payload$config$solver = 'glpk'
   sol = AlteryxSolve(payload)
@@ -20,7 +20,7 @@ test_that("Cell Tower LP is solved correctly by glpk", {
 })
 
 
-test_that("Cell Tower LP is solved correctly by gurobi", {
+test_that("Basic LP is solved correctly by gurobi", {
   skip_on_travis()
   skip_if_not_installed('gurobi')
   library(gurobi)
