@@ -3,7 +3,7 @@ context("Create Q matrix from a coefficient mapping")
 test_that("createQMatrix works with a basic example", {
   expected <- as.simple_triplet_matrix(matrix(c(1, 2, 2, 7), nrow = 2, ncol = 2))
   path <- getSampleData("simple_qp", TRUE)
-  file <- readCPLEXFile(path)
+  file <- readFileContents(path)
   list[,qVec] <- processQP(file, type = "CPLEX_LP")
   testQ <- createQMatrix(qVec)
   expect_equal(testQ, expected)
@@ -18,7 +18,7 @@ test_that("createQMatrix works with >2 terms", {
       )
     )
   path <- getSampleData("qp_3_terms.lp", TRUE)
-  file <- readCPLEXFile(path)
+  file <- readFileContents(path)
   list[,qVec] <- processQP(file, type = "CPLEX_LP")
   testQ <- createQMatrix(qVec)
   expect_equal(testQ, expected)
@@ -33,7 +33,7 @@ test_that("createQMatrix works with missing terms", {
       )
     )
   path <- getSampleData("qp_missing_term", TRUE)
-  file <- readCPLEXFile(path)
+  file <- readFileContents(path)
   list[,qVec] <- processQP(file, type = "CPLEX_LP")
   testQ <- createQMatrix(qVec)
   expect_equal(testQ, expected)
@@ -41,7 +41,7 @@ test_that("createQMatrix works with missing terms", {
 
 test_that("createQMatrix errors when receiving incorrect input", {
   path <- getSampleData("qp_3_terms", TRUE)
-  file <- readCPLEXFile(path)
+  file <- readFileContents(path)
   list[,qVec] <- processQP(file, type = "CPLEX_LP")
   testQ <- createQMatrix(qVec)
   expect_error(createQMatrix(subset(qVec, !is.na(qVec$values))),

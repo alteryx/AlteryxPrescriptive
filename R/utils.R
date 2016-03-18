@@ -1,7 +1,15 @@
 #' @importFrom stringr str_detect
 #' @keywords internal
-isLPFile <- function(filePath) {
-  tools::file_ext(filePath) == "lp"
+# getValidFormats is for internal use only. This function should serve as the "single source of
+# truth" with regard to the supported file extensions. All other functions that rely on this list
+# simply call this function and use the resulting vector
+getValidFormats <- function() {
+  return(c("lp", "mod"))
+}
+
+#' @keywords internal
+isSupportedFormat <- function(filePath) {
+  return(tools::file_ext(filePath) %in% getValidFormats())
 }
 
 listSampleData <- function() {
