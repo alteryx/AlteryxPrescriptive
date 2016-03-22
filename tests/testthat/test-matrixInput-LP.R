@@ -50,7 +50,6 @@ payloadSlam  <- list(config = config, inputs = inputsSlam)
 payloadDense <- list(config = config, inputs = inputsDense)
 
 
-
 ## Tests
 test_that("linear programming, matrix mode (slam), with glpk", {
   payloadSlam$config$solver <- 'glpk'
@@ -65,10 +64,18 @@ test_that("linear programming, matrix mode (dense), with glpk", {
   expect_equal(sol$objval, 1)
 })
 
-test_that("linear programming, matrix mode, with gurobi", {
+test_that("linear programming, matrix mode (slam), with gurobi", {
   skip_on_travis()
   library(gurobi)
   payloadSlam$config$solver <- 'gurobi'
   res <- capture.output(sol <- AlteryxSolve(payloadSlam))
+  expect_equal(sol$objval, 1)
+})
+
+test_that("linear programming, matrix mode (dense), with gurobi", {
+  skip_on_travis()
+  library(gurobi)
+  payloadDense$config$solver <- 'gurobi'
+  res <- capture.output(sol <- AlteryxSolve(payloadDense))
   expect_equal(sol$objval, 1)
 })
