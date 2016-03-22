@@ -1,26 +1,44 @@
+# convert input data.frame to matrix based on the matrix's format
+#  1. if the df has 'i','j','v' as columns name -- slam
+#  2. if the df doesn't -- dense matrix
+dfToMatrix <- function(df, numCol) {
+  if (identical(names(df), c('i', 'j', 'v'))) {
+    m <- as.list(df)
+    m$nrow <- max(df$i)
+    m$ncol <- numCol
+    m <-  structure(m, class = 'simple_triplet_matrix')
+    m <- fixSlamMatrix(m)
+  } else {
+    m <- as.matrix(df)
+  }
+  return(m)
+}
+
+
+## Helper Functions ----
+#' Fix Slam Matrix
+#'
+#' @importFrom slam is.simple_triplet_matrix
+#' @keywords internal
+fixSlamMatrix <- function(m){
+  if (slam::is.simple_triplet_matrix(m)){
+    ord = sort.int(m$j, index.return = TRUE)
+    m$i = m$i[ord$ix]
+    m$j = m$j[ord$ix]
+    m$v = m$v[ord$ix]
+    return(m)
+  } else {
+    return(m)
+  }
+}
+
+
 processData <- function(idata){
 
-  nrow = NROW(idata$O)
-  if (identical(names(idata$A)[1:3], c('i', 'j', 'v'))){
-    idata$A <- as.list(idata$A)
-    idata$A$nrow = max(idata$A$i)
-    idata$A$ncol = NROW(idata$O)
-    idata$A <-  structure(idata$A, class = 'simple_triplet_matrix')
-    idata$A <- fixSlamMatrix(idata$A)
-  } else {
-    idata$A = as.matrix(idata$A)
-  }
-
+  nVar = NROW(idata$O)
+  idata$A <- dfToMatrix(idata$A, nVar)
   if ("Q" %in% names(idata)) {
-    if (identical(names(idata$Q)[1:3], c('i', 'j', 'v'))){
-      idata$Q <- as.list(idata$Q)
-      idata$Q$nrow = as.integer(max(idata$Q$i))
-      idata$Q$ncol = NROW(idata$O)
-      idata$Q <-  structure(idata$Q, class = 'simple_triplet_matrix')
-      idata$Q <- fixSlamMatrix(idata$Q)
-    } else {
-      idata$Q = as.matrix(idata$Q)
-    }
+    idata$Q <- dfToMatrix(idata$Q, nVar)
   }
 
   lb <- rep(0, nrow)
