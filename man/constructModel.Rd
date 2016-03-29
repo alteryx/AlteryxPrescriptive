@@ -9,8 +9,10 @@ constructModel(x, ...)
 \arguments{
 \item{x}{x}
 
-\item{...}{other arguments
-Returns an object of class OP that is supported by the ROI class}
+\item{...}{other arguments}
+}
+\value{
+Returns an object of class OP that is supported by the ROI class
 }
 \description{
 Generic function.
