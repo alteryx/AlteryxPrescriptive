@@ -1,8 +1,8 @@
 getBounds_matrix <- function(idata){
-  li = 1:NROW(idata$O)
-  ui = 1:NROW(idata$O)
-  lb = ifelse(idata$O$lb, idata$O$lb, 0)
-  ub = ifelse(idata$O$ub, idata$O$ub, Inf)
+  li <- 1:NROW(idata$O)
+  ui <- 1:NROW(idata$O)
+  lb <- ifelse(idata$O$lb, idata$O$lb, 0)
+  ub <- ifelse(idata$O$ub, idata$O$ub, Inf)
   nobj <- max(li, ui)
   bounds <- V_bound(li = li, ui = ui, lb = lb, ub = ub, nobj = nobj)
   # Need to treat bounds very carefully. V_bound strips default bounds which are
