@@ -1,26 +1,10 @@
 processData <- function(idata){
 
   nrow <- NROW(idata$O)
-  if (identical(names(idata$A)[1:3], c('i', 'j', 'v'))){
-    idata$A <- as.list(idata$A)
-    idata$A$nrow <- max(idata$A$i)
-    idata$A$ncol <- NROW(idata$O)
-    idata$A <-  structure(idata$A, class = 'simple_triplet_matrix')
-    idata$A <- fixSlamMatrix(idata$A)
-  } else {
-    idata$A = as.matrix(idata$A)
-  }
+  idata$A <- dfToMatrix(idata$A, nrow)
 
   if ("Q" %in% names(idata)) {
-    if (identical(names(idata$Q)[1:3], c('i', 'j', 'v'))){
-      idata$Q <- as.list(idata$Q)
-      idata$Q$nrow <- as.integer(max(idata$Q$i))
-      idata$Q$ncol <- NROW(idata$O)
-      idata$Q <-  structure(idata$Q, class = 'simple_triplet_matrix')
-      idata$Q <- fixSlamMatrix(idata$Q)
-    } else {
-      idata$Q = as.matrix(idata$Q)
-    }
+    idata$Q <- dfToMatrix(idata$Q, nrow)
   }
 
   lb <- rep(0, nrow)
@@ -66,4 +50,26 @@ processData <- function(idata){
 idata_to_df <- function(idata){
   df = as.vector(idata$O$coefficient)
   names(df) = as.character(idata$O$variable)
+}
+
+#' Convert input data.frame to matrix based on the matrix's format
+#'
+#'
+#' @param df data frame
+#' @param numCol number of columns
+#' @return
+#'   1. if the df has 'i','j','v' as columns name -- slam
+#'   2. if the df doesn't -- dense matrix
+#' @keywords internal
+dfToMatrix <- function(df, numCol) {
+  if (identical(names(df), c('i', 'j', 'v'))) {
+    m <- as.list(df)
+    m$nrow <- max(df$i)
+    m$ncol <- numCol
+    m <-  structure(m, class = 'simple_triplet_matrix')
+    m <- fixSlamMatrix(m)
+  } else {
+    m <- as.matrix(df)
+  }
+  return(m)
 }
