@@ -22,16 +22,26 @@ ROI_solve_gurobi <- function(lp){
 #'
 #' @param x x
 #' @param solver solver
+#' @param ... additional arguments. currently not used.
 #' @import ROI ROI.plugin.glpk ROI.plugin.quadprog quadprog
-solveModel <- function(x, solver = 'glpk'){
-  if (solver == 'gurobi'){
-    if (requireNamespace('gurobi')){
-      ROI_solve_gurobi(x)
-    }
-  } else {
-    ROI::ROI_solve(x, solver = solver)
+solveModel <- function(x, solver, ...){
+  UseMethod('solveModel')
+}
+
+solveModel.default <- function(x, solver = 'glpk'){
+  ROI::ROI_solve(x, solver = solver)
+}
+
+# solveModel.glpkapi <- function(x, solver = 'glpkapi'){
+#   ...
+# }
+
+solveModel.gurobi <- function(x, solver = 'gurobi'){
+  if (requireNamespace('gurobi')){
+    ROI_solve_gurobi(x)
   }
 }
+
 
 #' Solve Optimization Problem
 #'
@@ -40,5 +50,6 @@ solveModel <- function(x, solver = 'glpk'){
 AlteryxSolve <- function(x){
   class(x) = c(class(x), paste0(x$config$inputMode, "_mode"))
   d2 <- constructModel(x)
+  class(d2) <- c(class(d2), x$config$solver)
   invisible(solveModel(d2, solver = x$config$solver))
 }
