@@ -1,41 +1,7 @@
-# convert input data.frame to matrix based on the matrix's format
-#  1. if the df has 'i','j','v' as columns name -- slam
-#  2. if the df doesn't -- dense matrix
-dfToMatrix <- function(df, numCol) {
-  if (identical(names(df), c('i', 'j', 'v'))) {
-    m <- as.list(df)
-    m$nrow <- max(df$i)
-    m$ncol <- numCol
-    m <-  structure(m, class = 'simple_triplet_matrix')
-    m <- fixSlamMatrix(m)
-  } else {
-    m <- as.matrix(df)
-  }
-  return(m)
-}
-
-
-## Helper Functions ----
-#' Fix Slam Matrix
-#'
-#' @importFrom slam is.simple_triplet_matrix
-#' @keywords internal
-fixSlamMatrix <- function(m){
-  if (slam::is.simple_triplet_matrix(m)){
-    ord = sort.int(m$j, index.return = TRUE)
-    m$i = m$i[ord$ix]
-    m$j = m$j[ord$ix]
-    m$v = m$v[ord$ix]
-    return(m)
-  } else {
-    return(m)
-  }
-}
 
 
 processData <- function(idata){
-
-  nVar = NROW(idata$O)
+  nVar <- NROW(idata$O)
   idata$A <- dfToMatrix(idata$A, nVar)
   if ("Q" %in% names(idata)) {
     idata$Q <- dfToMatrix(idata$Q, nVar)
@@ -49,13 +15,13 @@ processData <- function(idata){
 
   ub <- rep(Inf, nrow)
   if ('ub' %in% names(idata$O)){
-    ub[!is.na(idata$O$ub)] = idata$O$ub[!is.na(idata$O$ub)]
+    ub[!is.na(idata$O$ub)] <- idata$O$ub[!is.na(idata$O$ub)]
   }
   idata$O$ub = ub
 
-  idata$B$dir = as.character(idata$B$dir)
+  idata$B$dir <- as.character(idata$B$dir)
   if (!is.null(idata$O$type)){
-    idata$O$type = as.character(idata$O$type)
+    idata$O$type <- as.character(idata$O$type)
   }
   return(idata)
 }
@@ -84,4 +50,26 @@ processData <- function(idata){
 idata_to_df <- function(idata){
   df = as.vector(idata$O$coefficient)
   names(df) = as.character(idata$O$variable)
+}
+
+#' Convert input data.frame to matrix based on the matrix's format
+#'
+#'
+#' @param df data frame
+#' @param numCol number of columns
+#' @return
+#'   1. if the df has 'i','j','v' as columns name -- slam
+#'   2. if the df doesn't -- dense matrix
+#' @keywords internal
+dfToMatrix <- function(df, numCol) {
+  if (identical(names(df), c('i', 'j', 'v'))) {
+    m <- as.list(df)
+    m$nrow <- max(df$i)
+    m$ncol <- numCol
+    m <-  structure(m, class = 'simple_triplet_matrix')
+    m <- fixSlamMatrix(m)
+  } else {
+    m <- as.matrix(df)
+  }
+  return(m)
 }

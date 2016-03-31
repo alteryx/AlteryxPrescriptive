@@ -17,6 +17,7 @@ inputsSlam$O <- data.frame(
   type = c("B", "B", "B")
 )
 
+
 # [1, 2, 3]
 # [1, 1, 0]
 inputsSlam$A <- data.frame(
@@ -34,6 +35,7 @@ inputsSlam$B <- data.frame(
 inputsDense <- list()
 inputsDense$O <- inputsSlam$O
 
+
 # [1, 2, 3]
 # [1, 1, 0]
 inputsDense$A <- data.frame(
@@ -45,12 +47,9 @@ inputsDense$A <- data.frame(
 inputsDense$B <- inputsSlam$B
 
 
-## Create payloads with different format ----
 payloadSlam  <- list(config = config, inputs = inputsSlam)
 payloadDense <- list(config = config, inputs = inputsDense)
 
-
-## Tests
 test_that("linear programming, matrix mode (slam), with glpk", {
   payloadSlam$config$solver <- 'glpk'
   sol <- AlteryxSolve(payloadSlam)

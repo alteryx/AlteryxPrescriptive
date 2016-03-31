@@ -15,6 +15,6 @@ readModelFile(filePath, type = "CPLEX_LP")
 An ROI-compatible model object
 }
 \description{
-Read and parse a CPLEX model file (including quadratic objectives).
+Read and parse a model file (including quadratic objectives).
 }
 

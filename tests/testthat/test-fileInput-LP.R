@@ -22,10 +22,9 @@ test_that("Cell Tower LP is solved correctly by glpk", {
 
 test_that("Cell Tower LP is solved correctly by gurobi", {
   skip_on_travis()
+  skip_if_not_installed('gurobi')
   library(gurobi)
   payload$config$solver = 'gurobi'
   out = capture.output(sol <- AlteryxSolve(payload))
   expect_equal(sol$objval, 7051)
 })
-
-

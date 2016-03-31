@@ -4,12 +4,14 @@
 \alias{solveModel}
 \title{Solve model}
 \usage{
-solveModel(x, solver = "glpk")
+solveModel(x, solver, ...)
 }
 \arguments{
 \item{x}{x}
 
 \item{solver}{solver}
+
+\item{...}{additional arguments. currently not used.}
 }
 \description{
 Solve model
