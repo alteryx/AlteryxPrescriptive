@@ -17,7 +17,7 @@ fill <- function(ll) {
 #             sensitivity report on change of constraint eqn RHS
 #    2) objCoeff:
 #             sensitivity report on change of  objective coefficients
-getSensitiviy <- function(fileName) {
+getSensitivity <- function(fileName) {
   solData <- readLines(fileName)
   id1 <- c(9,10,12,13)
   df1 <- strsplit(solData[id1], "\\s+")

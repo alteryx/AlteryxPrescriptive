@@ -1,26 +1,6 @@
-#' Solve model using Gurobi -----
-#'
-#' @keywords internal
-ROI_solve_gurobi <- function(lp){
-  bounds <- getBounds_gurobi(lp)
-  Q_ <- terms(objective(lp))$Q
-  model <- list(
-    modelsense = if (lp$maximum) "max" else "min",
-    obj = as.vector(terms(objective(lp))$L),
-    Q = if (is.null(Q_)) NULL else Q_/2,
-    A = as.matrix(constraints(lp)$L),
-    rhs = constraints(lp)$rhs,
-    sense = constraints(lp)$dir,
-    vtype = types(lp),
-    lb = bounds$lb,
-    ub = bounds$ub
-  )
-  soln <- gurobi::gurobi(model)
-}
-
 #' Solve model
 #'
-#' @param x x
+#' @param x x, fron constructModel, ROI OP object
 #' @param solver solver
 #' @param ... additional arguments. currently not used.
 #' @import ROI ROI.plugin.glpk ROI.plugin.quadprog quadprog
@@ -38,8 +18,73 @@ solveModel.default <- function(x, solver = 'glpk'){
 
 solveModel.gurobi <- function(x, solver = 'gurobi'){
   if (requireNamespace('gurobi')){
-    ROI_solve_gurobi(x)
+    solve_gurobi(x)
   }
+}
+
+
+
+solve_glpkAPI <- function(lp, attr) {
+  prob <- initProbGLPK()
+  setProbNameGLPK(prob, attr$objective_name)
+
+  modelsense <- if (lp$maximum) GLP_MAX else GLP_MIN
+  setObjDirGLPK(prob, modelsense)
+
+  addRowsGLPK(prob, attr$n_constraints)
+  addColsGLPK(prob, attr$n_objective_vars)
+
+  setRowsNamesGLPK(prob, 1:attr$n_constraints, attr$constraint_names)
+  setColsNamesGLPK(prob, 1:attr$n_objective_vars, attr$objective_vars_names)
+
+  lb <- lp$constraints$rhs
+  ub <- lp
+  type <- lp$constraints$dir
+  type[type == "<="] <- GLP_UP
+  type[type == ">="] <- GLP_LO
+  type[type == "=="] <- GLP_FX
+  setRowsBndsGLPK(prob, 1:attr$n_constraints, lb, ub, type)
+
+  #Set the type and bounds of columns and the objective function using a function which
+  #has the ability to work with vectors.
+  bounds <- getBounds_glpkAPI(lp, attr$n_objective_vars)
+  obj <- as.vector(terms(objective(lp))$L)
+  setColsBndsObjCoefsGLPK(prob, 1:attr$n_objective_vars, bounds$lb, bounds$ub, obj, bounds$type)
+
+  #Load the constraint matrix.
+  mm <- constraints(lp)$L
+
+  ia <- mm$i
+  ja <- mm$j
+  ar <- mm$v
+  loadMatrixGLPK(prob, attr$n_nonzeros, ia, ja, ar)
+  #Solve the problem using the simplex algorithm.
+  solveSimplexGLPK(prob)
+
+  printSolGLPK(prob, "sensitivity_report.txt")
+  df_sen <- getSensitivity("sensitivity_report.txt")
+
+  return(df_sen)
+}
+
+#' Solve model using Gurobi -----
+#'
+#' @keywords internal
+solve_gurobi <- function(lp) {
+  bounds <- getBounds_gurobi(lp)
+  Q_ <- terms(objective(lp))$Q
+  model <- list(
+    modelsense = if (lp$maximum) "max" else "min",
+    obj = as.vector(terms(objective(lp))$L),
+    Q = if (is.null(Q_)) NULL else Q_/2,
+    A = as.matrix(constraints(lp)$L),
+    rhs = constraints(lp)$rhs,
+    sense = constraints(lp)$dir,
+    vtype = types(lp),
+    lb = bounds$lb,
+    ub = bounds$ub
+  )
+  soln <- gurobi::gurobi(model)
 }
 
 
