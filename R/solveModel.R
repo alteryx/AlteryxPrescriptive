@@ -12,16 +12,15 @@ solveModel.default <- function(x, solver = 'glpk'){
   ROI::ROI_solve(x, solver = solver)
 }
 
-# solveModel.glpkapi <- function(x, solver = 'glpkapi'){
-#   ...
-# }
+solveModel.glpkapi <- function(x, lp_attr){
+  ...
+}
 
 solveModel.gurobi <- function(x, solver = 'gurobi'){
   if (requireNamespace('gurobi')){
     solve_gurobi(x)
   }
 }
-
 
 
 solve_glpkAPI <- function(lp, attr) {
@@ -38,11 +37,12 @@ solve_glpkAPI <- function(lp, attr) {
   setColsNamesGLPK(prob, 1:attr$n_objective_vars, attr$objective_vars_names)
 
   lb <- lp$constraints$rhs
-  ub <- lp
+  ub <- lb
   type <- lp$constraints$dir
   type[type == "<="] <- GLP_UP
   type[type == ">="] <- GLP_LO
   type[type == "=="] <- GLP_FX
+  type <- as.numeric(type)
   setRowsBndsGLPK(prob, 1:attr$n_constraints, lb, ub, type)
 
   #Set the type and bounds of columns and the objective function using a function which
@@ -61,7 +61,7 @@ solve_glpkAPI <- function(lp, attr) {
   #Solve the problem using the simplex algorithm.
   solveSimplexGLPK(prob)
 
-  printSolGLPK(prob, "sensitivity_report.txt")
+  printRangesGLPK(lp = prob, fname = "sensitivity_report.txt")
   df_sen <- getSensitivity("sensitivity_report.txt")
 
   return(df_sen)
