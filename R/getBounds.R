@@ -63,7 +63,7 @@ getBounds_gurobi <- function(mod){
 # mod: list, lp$bounds where lp is OP object from ROI
 getBounds_glpkAPI <- function(mod, n_objective_vars) {
   lb <- rep(0, n_objective_vars)
-  up <- rep(Inf, n_objective_vars)
+  ub <- rep(Inf, n_objective_vars)
 
   ind_lb <- mod$bounds$lower$ind
   val_lb <- mod$bounds$lower$val
@@ -71,7 +71,7 @@ getBounds_glpkAPI <- function(mod, n_objective_vars) {
   val_ub <- mod$bounds$upper$val
 
   lb[ind_lb] <- val_lb
-  up[ind_ub] <- val_ub
+  ub[ind_ub] <- val_ub
 
   type <- rep(0, n_objective_vars)
   for (i in 1:n_objective_vars) {
