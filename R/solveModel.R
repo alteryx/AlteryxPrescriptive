@@ -13,7 +13,7 @@ solveModel.default <- function(x, solver = 'glpk'){
 }
 
 solveModel.glpkAPI <- function(x, solver = 'glpkAPI', lp_attr){
-  solveModel.glpkapi(x, lp_attr)
+  solve_glpkAPI(x, lp_attr)
 }
 
 solveModel.gurobi <- function(x, solver = 'gurobi'){
@@ -98,10 +98,10 @@ AlteryxSolve <- function(x){
 
   if (x$config$returnSensitivity) {
     # Use glpkAPI as the solver, if sensitivity analysis is required.
-    class(d2) <- c(class(d2), 'glpkAPI')
-    solveModel(d2, solver = 'glpkAPI')
+    class(d2$OP) <- c(class(d2$OP), 'glpkAPI')
+    solveModel(d2$OP, solver = 'glpkAPI', d2$OPAttributes)
   } else {
-    class(d2) <- c(class(d2), x$config$solver)
-    invisible(solveModel(d2, solver = x$config$solver))
+    class(d2$OP) <- c(class(d2$OP), x$config$solver)
+    invisible(solveModel(d2$OP, solver = x$config$solver))
   }
 }

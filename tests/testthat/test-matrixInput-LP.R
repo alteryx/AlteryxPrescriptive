@@ -4,7 +4,8 @@ context("matrixInput")
 config <- list(
   inputMode = "matrix",
   problemType = "lp",
-  maximize = FALSE
+  maximize = FALSE,
+  returnSensitivity = FALSE
 )
 
 ## Input data.frame with slam format ----
