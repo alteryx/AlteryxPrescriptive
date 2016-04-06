@@ -7,13 +7,13 @@ processData <- function(idata){
     idata$Q <- dfToMatrix(idata$Q, nVar)
   }
 
-  lb <- rep(0, nrow)
+  lb <- rep(0, nVar)
   if ('lb' %in% names(idata$O)){
     lb[!is.na(idata$O$lb)] = idata$O$lb[!is.na(idata$O$lb)]
   }
   idata$O$lb = lb
 
-  ub <- rep(Inf, nrow)
+  ub <- rep(Inf, nVar)
   if ('ub' %in% names(idata$O)){
     ub[!is.na(idata$O$ub)] <- idata$O$ub[!is.na(idata$O$ub)]
   }
@@ -69,7 +69,7 @@ dfToMatrix <- function(df, numCol) {
     m <-  structure(m, class = 'simple_triplet_matrix')
     m <- fixSlamMatrix(m)
   } else {
-    m <- as.matrix(df)
+    m <- as.simple_triplet_matrix(df)
   }
   return(m)
 }

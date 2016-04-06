@@ -32,13 +32,13 @@ constructModel.file_mode <- function(x, ...){
   } else {
     objective <- L_objective(as.vector(mod$objective))
   }
-  OP(
-    objective = objective,
-    constraints = constraints,
-    types = mod$types,
-    bounds = getBounds(mod),
-    maximum = mod$maximum
-  )
+  op_obj <- OP(objective = objective,
+               constraints = constraints,
+               types = mod$types,
+               bounds = getBounds(mod),
+               maximum = mod$maximum)
+
+  return (list (OP = op_obj, OPAttributes = attributes(mod)))
 }
 
 # If the manual input UI creates a temp file in the CPLEX_LP format, and returns a path to it
@@ -58,11 +58,46 @@ constructModel.matrix_mode <- function(x, ...){
     dir = idata$B$dir,
     rhs = idata$B$rhs
   )
-  OP(
-    objective = objective,
-    constraints = constraints,
-    types = idata$O$type,
-    bounds = getBounds_matrix(idata),
-    maximum = x$config$maximize
+  op_obj <- OP(objective = objective,
+               constraints = constraints,
+               types = idata$O$type,
+               bounds = getBounds_matrix(idata),
+               maximum = x$config$maximize)
+
+  return(list (OP = op_obj, OPAttributes = getOPAttributes(idata)))
+}
+
+## Helper function: get optimization problem attributes for matrix input mode
+getOPAttributes <- function(x) {
+  num_obj <- getNumObjective(x$O$type)
+
+  list(
+    n_objective_vars = num_obj$total,
+    n_integer_vars = num_obj$n_integer,
+    n_binary_vars = num_obj$n_binary,
+    n_constraints = nrow(x$B),
+    n_nonzeros = length(x$A$i),
+    problem_name = "",
+    objective_name = "",
+    objective_vars_names = as.character(x$O$variable),
+    constraint_names = addConstraintNames(nrow(x$B), x$B$cNames)
   )
+}
+
+addConstraintNames <- function(nConstraints, cNames = NULL){
+  if (is.null(cNames)){
+    paste0("C", 1:nConstraints)
+  } else {
+    as.character(cNames)
+  }
+}
+
+getNumObjective <- function(x) {
+  temp <- table(x)
+  n_integer <- if (is.na(temp['I'])) 0 else temp['I']
+  n_binary  <- if (is.na(temp['B'])) 0 else temp['B']
+
+  return( list(total = length(x),
+               n_integer = n_integer,
+               n_binary = n_binary) )
 }
