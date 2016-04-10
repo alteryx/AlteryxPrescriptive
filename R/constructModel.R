@@ -17,7 +17,7 @@ constructObjective <- function(x, ...){
   } else {
 
   }
-  return(objective)
+  objective
 }
 
 # Construct model file -----
@@ -38,7 +38,7 @@ constructModel.file_mode <- function(x, ...){
                bounds = getBounds(mod),
                maximum = mod$maximum)
 
-  return (list (OP = op_obj, OPAttributes = attributes(mod)))
+  list(OP = op_obj, OPAttributes = attributes(mod))
 }
 
 # If the manual input UI creates a temp file in the CPLEX_LP format, and returns a path to it
@@ -64,7 +64,7 @@ constructModel.matrix_mode <- function(x, ...){
                bounds = getBounds_matrix(idata),
                maximum = x$config$maximize)
 
-  return(list (OP = op_obj, OPAttributes = getOPAttributes(idata)))
+  list (OP = op_obj, OPAttributes = getOPAttributes(idata))
 }
 
 ## Helper function: get optimization problem attributes for matrix input mode
@@ -97,7 +97,8 @@ getNumObjective <- function(x) {
   n_integer <- if (is.na(temp['I'])) 0 else temp['I']
   n_binary  <- if (is.na(temp['B'])) 0 else temp['B']
 
-  return( list(total = length(x),
-               n_integer = n_integer,
-               n_binary = n_binary) )
+  list(
+    total = length(x),
+    n_integer = n_integer,
+    n_binary = n_binary)
 }

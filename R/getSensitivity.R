@@ -3,8 +3,8 @@ getBlockLines <- function(solData) {
   page_ends <- grep("End of report", solData)
   data_starts <- page_starts + 8
   data_ends <- c(page_starts[2] - 1, page_ends - 1)
-  return(list(row = c(data_starts[1], data_ends[1]),
-              col = c(data_starts[2], data_ends[2])))
+  list(row = c(data_starts[1], data_ends[1]),
+       col = c(data_starts[2], data_ends[2]))
 }
 
 getDataLines <- function(start_end) {
@@ -13,7 +13,7 @@ getDataLines <- function(start_end) {
 
   aa <- start:end
   aa <- subset(aa, (aa-start+1)%%3 != 0)
-  return(aa)
+  aa
 }
 
 # sensitivityHelper <- function(block_start, block_end) {
@@ -33,7 +33,7 @@ fillNAs <- function(ll) {
     ll[short_inds] <- lapply(ll[short_inds], function(x) c(x, NA))
   }
 
-  return(ll)
+  ll
 }
 
 # Helper function
@@ -48,7 +48,8 @@ fill <- function(ll) {
   ll <- lapply(ll, function(x) gsub("^\\.$", "0", x))
   ll <- as.data.frame(ll, stringsAsFactors = FALSE)
   ll[,4:9] <- sapply(ll[,4:9], as.numeric)
-  return(ll)
+
+  ll
 }
 
 # Parse sensitivity report into a list of 2 data.frames.
@@ -67,7 +68,7 @@ getSensitivity <- function(fileName) {
   df2 <- strsplit(solData[ind2], "\\s+")
   df2 <- fill(df2)
 
-  return(list(constraintsRHS = df1, objCoeff = df2))
+  list(constraintsRHS = df1, objCoeff = df2)
 }
 
 

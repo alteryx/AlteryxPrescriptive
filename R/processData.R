@@ -1,5 +1,3 @@
-
-
 processData <- function(idata){
   nVar <- NROW(idata$O)
   idata$A <- dfToMatrix(idata$A, nVar)
@@ -23,7 +21,7 @@ processData <- function(idata){
   if (!is.null(idata$O$type)){
     idata$O$type <- as.character(idata$O$type)
   }
-  return(idata)
+  idata
 }
 
 # Read matrix data from optional inputs
@@ -71,5 +69,5 @@ dfToMatrix <- function(df, numCol) {
   } else {
     m <- as.simple_triplet_matrix(df)
   }
-  return(m)
+  m
 }

@@ -59,7 +59,7 @@ solve_glpkAPI <- function(lp, attr) {
   ar <- mm$v
   loadMatrixGLPK(prob, attr$n_nonzeros, ia, ja, ar)
   #Solve the problem using the simplex algorithm.
-  solveSimplexGLPK(prob)
+  invisible(solveSimplexGLPK(prob))
 
   printRangesGLPK(lp = prob, fname = "sensitivity_report.txt")
   df_sen <- getSensitivity("sensitivity_report.txt")
@@ -99,7 +99,7 @@ AlteryxSolve <- function(x){
   if (x$config$returnSensitivity) {
     # Use glpkAPI as the solver, if sensitivity analysis is required.
     class(d2$OP) <- c(class(d2$OP), 'glpkAPI')
-    solveModel(d2$OP, solver = 'glpkAPI', d2$OPAttributes)
+    invisible(solveModel(d2$OP, solver = 'glpkAPI', d2$OPAttributes))
   } else {
     class(d2$OP) <- c(class(d2$OP), x$config$solver)
     invisible(solveModel(d2$OP, solver = x$config$solver))

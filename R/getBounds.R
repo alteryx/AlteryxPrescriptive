@@ -12,7 +12,7 @@ getBounds_matrix <- function(idata){
   if ((length(bounds$lower$ind) == 0) && (length(bounds$upper$ind) == 0)){
     bounds <- NULL
   }
-  return(bounds)
+  bounds
 }
 
 # Get Bounds from Object -----
@@ -31,7 +31,7 @@ getBounds <- function(mod){
   if ((length(bounds$lower$ind) == 0) && (length(bounds$upper$ind) == 0)){
     bounds <- NULL
   }
-  return(bounds)
+  bounds
 }
 
 # Get bounds for Gurobi ----
@@ -43,7 +43,7 @@ getBounds_gurobi <- function(mod){
   ub <- mod$bounds$upper$val
   # we force evaluation of nobj due to lazy evaluation error in V_bound
   if (is.null(li) && is.null(ui)){
-    return(list(lb = NULL, ub = NULL))
+    list(lb = NULL, ub = NULL)
   } else {
     nobj <- max(li, ui)
     lb_ <- rep(0, nobj)
@@ -96,5 +96,5 @@ getBounds_glpkAPI <- function(mod, n_objective_vars) {
     }
   }
 
-  return(list(lb = lb, ub = ub, type = type))
+  list(lb = lb, ub = ub, type = type)
 }
