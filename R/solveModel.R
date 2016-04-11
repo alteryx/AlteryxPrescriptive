@@ -3,7 +3,7 @@
 #' @param x x, fron constructModel, ROI OP object
 #' @param solver solver
 #' @param ... additional arguments. currently not used.
-#' @import ROI ROI.plugin.glpk ROI.plugin.quadprog quadprog
+#' @import ROI ROI.plugin.glpk ROI.plugin.quadprog quadprog glpkAPI
 solveModel <- function(x, solver, ...){
   UseMethod('solveModel')
 }
@@ -21,7 +21,6 @@ solveModel.gurobi <- function(x, solver = 'gurobi'){
     solve_gurobi(x)
   }
 }
-
 
 solve_glpkAPI <- function(lp, attr) {
   prob <- initProbGLPK()
@@ -96,7 +95,7 @@ AlteryxSolve <- function(x){
   class(x) <- c(class(x), paste0(x$config$inputMode, "_mode"))
   d2 <- constructModel(x)
 
-  if (x$config$returnSensitivity) {
+  if (exists('returnSensitivity', x$config) && x$config$returnSensitivity) {
     # Use glpkAPI as the solver, if sensitivity analysis is required.
     class(d2$OP) <- c(class(d2$OP), 'glpkAPI')
     invisible(solveModel(d2$OP, solver = 'glpkAPI', d2$OPAttributes))

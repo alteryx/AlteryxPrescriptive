@@ -23,7 +23,8 @@ Imports:
   ROI,
   ROI.plugin.glpk,
   ROI.plugin.quadprog,
-  slam
+  slam,
+  glpkAPI
 Suggests:
   testthat,
   gurobi
