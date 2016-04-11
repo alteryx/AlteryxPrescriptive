@@ -4,7 +4,8 @@ context("Quadratic Programming")
 config <- list(
   inputMode = "matrix",
   problemType = "qp",
-  maximize = FALSE
+  maximize = FALSE,
+  returnSensitivity = FALSE
 )
 
 ## Input data.frame with slam format ----

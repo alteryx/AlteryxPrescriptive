@@ -93,7 +93,7 @@ solve_gurobi <- function(lp) {
 #' @param x list containing config and inputData
 #' @export
 AlteryxSolve <- function(x){
-  class(x) = c(class(x), paste0(x$config$inputMode, "_mode"))
+  class(x) <- c(class(x), paste0(x$config$inputMode, "_mode"))
   d2 <- constructModel(x)
 
   if (x$config$returnSensitivity) {
