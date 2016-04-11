@@ -7,7 +7,7 @@
 solveModel(x, solver, ...)
 }
 \arguments{
-\item{x}{x}
+\item{x}{x, fron constructModel, ROI OP object}
 
 \item{solver}{solver}
 

@@ -22,6 +22,7 @@ solveModel.gurobi <- function(x, solver = 'gurobi'){
   }
 }
 
+#' @import glpkAPI
 solve_glpkAPI <- function(lp, attr) {
   prob <- initProbGLPK()
   setProbNameGLPK(prob, attr$objective_name)
