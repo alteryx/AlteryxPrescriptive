@@ -95,7 +95,7 @@ AlteryxSolve <- function(x){
   class(x) <- c(class(x), paste0(x$config$inputMode, "_mode"))
   d2 <- constructModel(x)
 
-  if (x$config$returnSensitivity) {
+  if (exists('returnSensitivity', x$config) && x$config$returnSensitivity) {
     # Use glpkAPI as the solver, if sensitivity analysis is required.
     class(d2$OP) <- c(class(d2$OP), 'glpkAPI')
     invisible(solveModel(d2$OP, solver = 'glpkAPI', d2$OPAttributes))
