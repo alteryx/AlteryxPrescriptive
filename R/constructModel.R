@@ -21,6 +21,7 @@ constructObjective <- function(x, ...){
 }
 
 # Construct model file -----
+#' @export
 constructModel.file_mode <- function(x, ...){
   x <- x$config
   mod <- readModelFile(x$filePath, type = x$fileType)
