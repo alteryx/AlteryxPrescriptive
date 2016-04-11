@@ -1,10 +1,10 @@
+
+
 processData <- function(idata){
-
-  nrow <- NROW(idata$O)
-  idata$A <- dfToMatrix(idata$A, nrow)
-
+  nVar <- NROW(idata$O)
+  idata$A <- dfToMatrix(idata$A, nVar)
   if ("Q" %in% names(idata)) {
-    idata$Q <- dfToMatrix(idata$Q, nrow)
+    idata$Q <- dfToMatrix(idata$Q, nVar)
   }
 
   lb <- rep(0, nrow)

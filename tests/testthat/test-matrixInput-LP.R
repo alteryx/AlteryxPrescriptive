@@ -18,6 +18,8 @@ inputsSlam$O <- data.frame(
 )
 
 
+# [1, 2, 3]
+# [1, 1, 0]
 inputsSlam$A <- data.frame(
   i = c(1, 1, 1, 2, 2),
   j = c(1, 2, 3, 1, 2),
@@ -33,6 +35,9 @@ inputsSlam$B <- data.frame(
 inputsDense <- list()
 inputsDense$O <- inputsSlam$O
 
+
+# [1, 2, 3]
+# [1, 1, 0]
 inputsDense$A <- data.frame(
   x1 = c(1, 1),
   x2 = c(2, 1),
@@ -40,6 +45,7 @@ inputsDense$A <- data.frame(
 )
 
 inputsDense$B <- inputsSlam$B
+
 
 payloadSlam  <- list(config = config, inputs = inputsSlam)
 payloadDense <- list(config = config, inputs = inputsDense)
@@ -49,6 +55,7 @@ test_that("linear programming, matrix mode (slam), with glpk", {
   sol <- AlteryxSolve(payloadSlam)
   expect_equal(sol$objval, 1)
 })
+
 
 test_that("linear programming, matrix mode (dense), with glpk", {
   payloadDense$config$solver <- 'glpk'
