@@ -33,11 +33,13 @@ constructModel.file_mode <- function(x, ...){
   } else {
     objective <- L_objective(as.vector(mod$objective))
   }
-  op_obj <- OP(objective = objective,
-               constraints = constraints,
-               types = mod$types,
-               bounds = getBounds(mod),
-               maximum = mod$maximum)
+  op_obj <- OP(
+    objective = objective,
+    constraints = constraints,
+    types = mod$types,
+    bounds = getBounds(mod),
+    maximum = mod$maximum
+  )
 
   list(OP = op_obj, OPAttributes = attributes(mod))
 }
@@ -59,11 +61,13 @@ constructModel.matrix_mode <- function(x, ...){
     dir = idata$B$dir,
     rhs = idata$B$rhs
   )
-  op_obj <- OP(objective = objective,
-               constraints = constraints,
-               types = idata$O$type,
-               bounds = getBounds_matrix(idata),
-               maximum = x$config$maximize)
+  op_obj <- OP(
+    objective = objective,
+    constraints = constraints,
+    types = idata$O$type,
+    bounds = getBounds_matrix(idata),
+    maximum = x$config$maximize
+  )
 
   list (OP = op_obj, OPAttributes = getOPAttributes(idata))
 }
@@ -101,5 +105,6 @@ getNumObjective <- function(x) {
   list(
     total = length(x),
     n_integer = n_integer,
-    n_binary = n_binary)
+    n_binary = n_binary
+  )
 }
