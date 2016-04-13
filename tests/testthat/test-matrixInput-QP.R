@@ -4,7 +4,8 @@ context("Quadratic Programming")
 config <- list(
   inputMode = "matrix",
   problemType = "qp",
-  maximize = FALSE
+  maximize = FALSE,
+  returnSensitivity = FALSE
 )
 
 ## Input data.frame with slam format ----
@@ -69,8 +70,9 @@ test_that("quadratic programming, matrix mode (dense), with quadprog", {
 })
 
 
-test_that("quadratic programming, matrix mode (slam), with quadprog", {
+test_that("quadratic programming, matrix mode (slam), with gurobi", {
   skip_on_travis()
+  skip_if_not_installed('gurobi')
   library(gurobi)
   payloadSlam$config$solver <- 'gurobi'
   res <- capture.output(sol <- AlteryxSolve(payloadSlam))
@@ -78,8 +80,9 @@ test_that("quadratic programming, matrix mode (slam), with quadprog", {
 })
 
 
-test_that("quadratic programming, matrix mode (dense), with quadprog", {
+test_that("quadratic programming, matrix mode (dense), with gurobi", {
   skip_on_travis()
+  skip_if_not_installed('gurobi')
   library(gurobi)
   payloadDense$config$solver <- 'gurobi'
   res <- capture.output(sol <- AlteryxSolve(payloadDense))

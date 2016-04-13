@@ -8,8 +8,6 @@ fixSlamMatrix <- function(m){
     m$i <- m$i[ord$ix]
     m$j <- m$j[ord$ix]
     m$v <- m$v[ord$ix]
-    return(m)
-  } else {
-    return(m)
   }
+  m
 }
