@@ -3,8 +3,10 @@ getBlockLines <- function(solData) {
   page_ends <- grep("End of report", solData)
   data_starts <- page_starts + 8
   data_ends <- c(page_starts[2] - 1, page_ends - 1)
-  list(row = c(data_starts[1], data_ends[1]),
-       col = c(data_starts[2], data_ends[2]))
+  list(
+    row = c(data_starts[1], data_ends[1]),
+    col = c(data_starts[2], data_ends[2])
+  )
 }
 
 getDataLines <- function(start_end) {
@@ -43,8 +45,10 @@ fill <- function(ll) {
   ll <- lapply(ll, function(x) x[2:length(x)])
   ll <- fillNAs(ll)
 
-  ll <- data.frame(matrix(unlist(ll), nrow=length(ll), byrow=T),
-                   stringsAsFactors = FALSE)
+  ll <- data.frame(
+    matrix(unlist(ll), nrow=length(ll), byrow=T),
+    stringsAsFactors = FALSE
+  )
   ll <- lapply(ll, function(x) gsub("^\\.$", "0", x))
   ll <- as.data.frame(ll, stringsAsFactors = FALSE)
   ll[,4:9] <- sapply(ll[,4:9], as.numeric)
