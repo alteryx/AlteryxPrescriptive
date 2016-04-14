@@ -60,9 +60,9 @@ solve_glpkAPI <- function(lp, attr) {
   loadMatrixGLPK(prob, attr$n_nonzeros, ia, ja, ar)
   #Solve the problem using the simplex algorithm.
   invisible(solveSimplexGLPK(prob))
-
-  printRangesGLPK(lp = prob, fname = "sensitivity_report.txt")
-  df_sen <- getSensitivity("sensitivity_report.txt")
+  tf <- tempfile(fileext = ".txt"); on.exit(unlink(tf))
+  printRangesGLPK(lp = prob, fname = tf)
+  df_sen <- getSensitivity(tf)
 
   return(df_sen)
 }
