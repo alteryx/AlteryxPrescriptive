@@ -46,7 +46,21 @@ constructModel.file_mode <- function(x, ...){
 
 # If the manual input UI creates a temp file in the CPLEX_LP format, and returns a path to it
 #' @export
-constructModel.manual_mode <- constructModel.file_mode
+constructModel.manual_mode <- function(x, ...){
+  manualInput = list(
+    constraints = x$config$constraints,
+    objective = x$config$objective,
+    maximize = x$config$maximize
+  )
+  tf = tempfile(fileext = ".lp")
+  cat(makeCPLEXFile(manualInput), file = tf)
+  x$config$inputMode = "file"
+  x$config$filePath = tf
+  x$config$fileType = 'CPLEX_LP'
+  print(tf)
+  class(x) <- c(class(x)[1], paste0(x$config$inputMode, "_mode"))
+  constructModel(x)
+}
 
 #' @export
 constructModel.matrix_mode <- function(x, ...){
