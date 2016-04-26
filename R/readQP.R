@@ -7,7 +7,7 @@
 #' @export
 readModelFile <- function(filePath, type = "CPLEX_LP") {
   file <- readFileContents(filePath)
-  if (!isQP(file)) {
+  if (!isQP(file) || type != "CPLEX_LP") {
     message("No quadratic elements detected. Defaulting to Rglpk_read_file.\n")
     return(Rglpk_read_file(filePath, type = type))
   }
