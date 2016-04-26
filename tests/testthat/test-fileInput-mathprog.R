@@ -23,7 +23,7 @@ test_that("TSP is solved correctly by glpk", {
   payload$config$filePath = getSampleData("tsp.mod")
   payload$config$solver = 'glpk'
   sol = AlteryxSolve(payload)
-  expect_equal(sol$objval, 34)
+  expect_equal(sol$objval, 6859)
 })
 
 
