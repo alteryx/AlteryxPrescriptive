@@ -19,6 +19,13 @@ test_that("Basic LP is solved correctly by glpk", {
   expect_equal(sol$objval, 34)
 })
 
+test_that("TSP is solved correctly by glpk", {
+  payload$config$filePath = getSampleData("tsp.mod")
+  payload$config$solver = 'glpk'
+  sol = AlteryxSolve(payload)
+  expect_equal(sol$objval, 34)
+})
+
 
 test_that("Basic LP is solved correctly by gurobi", {
   skip_on_travis()
