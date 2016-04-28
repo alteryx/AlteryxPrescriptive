@@ -103,7 +103,7 @@ getOPAttributes <- function(x) {
     problem_name = "",
     objective_name = "",
     objective_vars_names = as.character(x$O$variable),
-    constraint_names = addConstraintNames(nrow(x$B), x$B$cNames)
+    constraint_names = addConstraintNames(nrow(x$A), x$B$cNames)
   )
 }
 

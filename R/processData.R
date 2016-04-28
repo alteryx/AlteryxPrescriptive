@@ -1,6 +1,16 @@
 processData <- function(idata){
   nVar <- NROW(idata$O)
-  idata$A <- dfToMatrix(idata$A, nVar)
+
+  if ("B" %in% names(idata)) {
+    idata$B$dir <- as.character(idata$B$dir)
+    idata$A <- dfToMatrix(idata$A, nVar)
+  } else {
+    idata$B$dir <- as.character(idata$A$dir)
+    idata$B$rhs <- idata$A$rhs
+    var_col <- !names(idata$A) %in% c("dir", "rhs")
+    idata$A <- dfToMatrix(idata$A[, var_col], nVar)
+  }
+
   if ("Q" %in% names(idata)) {
     idata$Q <- dfToMatrix(idata$Q, nVar)
   }
@@ -17,7 +27,7 @@ processData <- function(idata){
   }
   idata$O$ub = ub
 
-  idata$B$dir <- as.character(idata$B$dir)
+
   if (!is.null(idata$O$type)){
     idata$O$type <- as.character(idata$O$type)
   }
