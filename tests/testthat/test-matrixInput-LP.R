@@ -81,3 +81,14 @@ test_that("linear programming, matrix mode (dense), with gurobi", {
   res <- capture.output(sol <- AlteryxSolve(payloadDense))
   expect_equal(sol$objval, 1)
 })
+
+inputsDense2 <- inputsDense
+inputsDense2$A <- cbind(inputsDense2$A, inputsDense2$B)
+inputsDense2$B <- NULL
+payloadDense2 <- list(config = config, inputs = inputsDense2)
+
+test_that("linear programming, matrix mode (dense with dir and rhs in A), with glpk", {
+  payloadDense2$config$solver <- 'glpk'
+  sol <- AlteryxSolve(payloadDense2)
+  expect_equal(sol$objval, 1)
+})

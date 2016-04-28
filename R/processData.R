@@ -1,5 +1,11 @@
 processData <- function(idata){
   nVar <- NROW(idata$O)
+  # deal with the case where dir and rhs are specified in matrix A
+  if (all(c('dir', 'rhs') %in% names(idata$A))){
+    idata$B = idata$A[,c('dir', 'rhs')]
+    idata$A$dir = NULL
+    idata$A$rhs = NULL
+  }
   idata$A <- dfToMatrix(idata$A, nVar)
   if ("Q" %in% names(idata)) {
     idata$Q <- dfToMatrix(idata$Q, nVar)
