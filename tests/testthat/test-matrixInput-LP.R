@@ -8,7 +8,7 @@ config <- list(
   returnSensitivity = FALSE
 )
 
-## Input data.frame with slam format ----
+## Case1: Input data.frame with slam format ----
 inputsSlam <- list()
 inputsSlam$O <- data.frame(
   variable = c('x', 'y', 'z'),
@@ -32,10 +32,9 @@ inputsSlam$B <- data.frame(
   rhs = c(4, 1)
 )
 
-## Input data.frame with dense matrix format ----
+## Case2: Input data.frame with dense matrix format ----
 inputsDense <- list()
 inputsDense$O <- inputsSlam$O
-
 
 # [1, 2, 3]
 # [1, 1, 0]
@@ -48,9 +47,25 @@ inputsDense$A <- data.frame(
 inputsDense$B <- inputsSlam$B
 
 
+## Case3: Input data.frame with dense matrix format without "B" input ----
+inputsDense1 <- list()
+inputsDense1$O <- inputsSlam$O
+inputsDense1$A <- data.frame(
+  x1 = c(1, 1),
+  x2 = c(2, 1),
+  x3 = c(3, 0),
+  dir = c("<=", ">="),
+  rhs = c(4, 1)
+)
+
+
+# Assemble payload
 payloadSlam  <- list(config = config, inputs = inputsSlam)
 payloadDense <- list(config = config, inputs = inputsDense)
+payloadDense1 <- list(config = config, inputs = inputsDense1)
 
+
+# Tests
 test_that("linear programming, matrix mode (slam), with glpk", {
   payloadSlam$config$solver <- 'glpk'
   sol <- AlteryxSolve(payloadSlam)
@@ -59,6 +74,12 @@ test_that("linear programming, matrix mode (slam), with glpk", {
 
 
 test_that("linear programming, matrix mode (dense), with glpk", {
+  payloadDense1$config$solver <- 'glpk'
+  sol <- AlteryxSolve(payloadDense1)
+  expect_equal(sol$objval, 1)
+})
+
+test_that("linear programming, matrix mode (dense, no B input), with glpk", {
   payloadDense$config$solver <- 'glpk'
   sol <- AlteryxSolve(payloadDense)
   expect_equal(sol$objval, 1)
@@ -79,5 +100,15 @@ test_that("linear programming, matrix mode (dense), with gurobi", {
   library(gurobi)
   payloadDense$config$solver <- 'gurobi'
   res <- capture.output(sol <- AlteryxSolve(payloadDense))
+  expect_equal(sol$objval, 1)
+})
+
+
+test_that("linear programming, matrix mode (dense, no B input), with gurobi", {
+  skip_on_travis()
+  skip_if_not_installed('gurobi')
+  library(gurobi)
+  payloadDense1$config$solver <- 'gurobi'
+  res <- capture.output(sol <- AlteryxSolve(payloadDense1))
   expect_equal(sol$objval, 1)
 })
