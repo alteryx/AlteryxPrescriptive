@@ -74,16 +74,17 @@ test_that("linear programming, matrix mode (slam), with glpk", {
 
 
 test_that("linear programming, matrix mode (dense), with glpk", {
+  payloadDense$config$solver <- 'glpk'
+  sol <- AlteryxSolve(payloadDense)
+  expect_equal(sol$objval, 1)
+})
+
+test_that("linear programming, matrix mode (dense, no B input), with glpk", {
   payloadDense1$config$solver <- 'glpk'
   sol <- AlteryxSolve(payloadDense1)
   expect_equal(sol$objval, 1)
 })
 
-test_that("linear programming, matrix mode (dense, no B input), with glpk", {
-  payloadDense$config$solver <- 'glpk'
-  sol <- AlteryxSolve(payloadDense)
-  expect_equal(sol$objval, 1)
-})
 
 test_that("linear programming, matrix mode (slam), with gurobi", {
   skip_on_travis()
