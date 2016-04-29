@@ -63,8 +63,12 @@ solve_glpkAPI <- function(lp, attr) {
   tf <- tempfile(fileext = ".txt"); on.exit(unlink(tf))
   printRangesGLPK(lp = prob, fname = tf)
   df_sen <- getSensitivity(tf)
+  # Get solutions:
+  solution <- getColsPrimGLPK(prob)
+  # Get optimal value:
+  objval <- getObjValGLPK(prob)
 
-  return(df_sen)
+  return(list(solution = solution, objval = objval, sensitivity = df_sen))
 }
 
 #' Solve model using Gurobi -----

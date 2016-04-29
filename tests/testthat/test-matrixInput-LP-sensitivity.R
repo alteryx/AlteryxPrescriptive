@@ -53,14 +53,14 @@ payloadDense <- list(config = config, inputs = inputsDense)
 
 test_that("LP sensitivity, matrix mode (slam), with glpkAPI", {
   payloadSlam$config$solver <- 'glpkAPI'
-  df_sensitivity <- AlteryxSolve(payloadSlam)
+  df_sensitivity <- AlteryxSolve(payloadSlam)$sensitivity
   expect_equal(dim(df_sensitivity$constraintsRHS), c(4,10))
 })
 
 
 test_that("LP sensitivity, matrix mode (dense), with glpk", {
   payloadDense$config$solver <- 'glpkAPI'
-  df_sensitivity <- AlteryxSolve(payloadDense)
+  df_sensitivity <- AlteryxSolve(payloadDense)$sensitivity
   expect_equal(dim(df_sensitivity$constraintsRHS), c(4,10))
 })
 
