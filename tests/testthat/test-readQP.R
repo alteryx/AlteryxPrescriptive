@@ -33,7 +33,7 @@ test_that("readModelFile can correctly turn a QP model file into a model object"
 test_that("readQP can handle in an insane LP file and return the correct object", {
   test_path <- getSampleData("alldiet", TRUE)
   expect_message(model <- readModelFile(test_path), "No quadratic elements detected. Defaulting to Rglpk_read_file.")
-  expect_output(model, "A linear program with 15 objective variables")
+  expect_output(print(model), "A linear program with 15 objective variables")
   expect_equal(attr(model, "n_objective_vars"), 15)
   expect_equal(attr(model, "n_objective_vars"), 15)
   expect_equal(attr(model, "n_constraints"), 8)
