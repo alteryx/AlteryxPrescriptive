@@ -1,4 +1,4 @@
-context("matrixInput")
+context("matrixInput sensitivity")
 
 ## Mock up configuration and inputs  ----
 config <- list(

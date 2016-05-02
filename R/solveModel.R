@@ -36,6 +36,7 @@ solve_glpkAPI <- function(lp, attr) {
   setRowsNamesGLPK(prob, 1:attr$n_constraints, attr$constraint_names)
   setColsNamesGLPK(prob, 1:attr$n_objective_vars, attr$objective_vars_names)
 
+  # TODO: this following setup doesn't support double-sided inequalities.
   lb <- lp$constraints$rhs
   ub <- lb
   type <- lp$constraints$dir
@@ -68,7 +69,15 @@ solve_glpkAPI <- function(lp, attr) {
   # Get optimal value:
   objval <- getObjValGLPK(prob)
 
-  return(list(solution = solution, objval = objval, sensitivity = df_sen))
+  # Get row(constraint) optimal:
+  row_optimals <- getRowsPrimGLPK(prob)
+  row_slacks   <- lp$constraints$rhs - row_optimals
+  row_activity <- list(optimals = row_optimals, slacks = row_slacks)
+
+  return(list(solution = solution,
+              objval = objval,
+              sensitivity = df_sen,
+              row_activity = row_activity))
 }
 
 #' Solve model using Gurobi -----
