@@ -89,8 +89,9 @@ solve_glpkAPI <- function(lp, attr) {
 
   return(list(solution = solution,
               objval = objval,
-              sensitivity = df_sen,
-              row_activity = row_activity))
+              status = NUll,
+              row_activity = row_activity,
+              sensitivity = df_sen))
 }
 
 #' Solve model using Gurobi -----
