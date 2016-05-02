@@ -19,7 +19,10 @@ solveModel.default <- function(x, solver = 'glpk'){
   # - objval
   # - status
   # - row_activity
-  c(sol, row_activity = row_activity)
+  list(solution = sol$solution,
+       objval = sol$objval,
+       status = sol$status,
+       row_activity = row_activity)
 }
 
 solveModel.glpkAPI <- function(x, solver = 'glpkAPI', lp_attr){
@@ -108,6 +111,16 @@ solve_gurobi <- function(lp) {
     ub = bounds$ub
   )
   soln <- gurobi::gurobi(model)
+
+  row_optimals <- as.vector(model$A %*% soln$x)
+  row_slacks   <- model$rhs - row_optimals
+  row_activity <- list(optimals = row_optimals, slacks = row_slacks)
+
+  return(list(solution = soln$x,
+              objval = soln$objval,
+              status = NULL,
+              row_activity = row_activity))
+
 }
 
 
