@@ -9,7 +9,20 @@ solveModel <- function(x, solver, ...){
 }
 
 solveModel.default <- function(x, solver = 'glpk'){
-  ROI::ROI_solve(x, solver = solver)
+  sol <- ROI::ROI_solve(x, solver = solver)
+  row_optimals <- as.vector(slam::matprod_simple_triplet_matrix(x$constraints$L, sol$solution))
+  row_slacks   <- x$constraints$rhs - row_optimals
+  row_activity <- list(optimals = row_optimals, slacks = row_slacks)
+
+  # Return a list of
+  # - solution
+  # - objval
+  # - status
+  # - row_activity
+  list(solution = sol$solution,
+       objval = sol$objval,
+       status = sol$status,
+       row_activity = row_activity)
 }
 
 solveModel.glpkAPI <- function(x, solver = 'glpkAPI', lp_attr){
@@ -36,6 +49,7 @@ solve_glpkAPI <- function(lp, attr) {
   setRowsNamesGLPK(prob, 1:attr$n_constraints, attr$constraint_names)
   setColsNamesGLPK(prob, 1:attr$n_objective_vars, attr$objective_vars_names)
 
+  # TODO: this following setup doesn't support double-sided inequalities.
   lb <- lp$constraints$rhs
   ub <- lb
   type <- lp$constraints$dir
@@ -68,7 +82,16 @@ solve_glpkAPI <- function(lp, attr) {
   # Get optimal value:
   objval <- getObjValGLPK(prob)
 
-  return(list(solution = solution, objval = objval, sensitivity = df_sen))
+  # Get row(constraint) optimal:
+  row_optimals <- getRowsPrimGLPK(prob)
+  row_slacks   <- lp$constraints$rhs - row_optimals
+  row_activity <- list(optimals = row_optimals, slacks = row_slacks)
+
+  return(list(solution = solution,
+              objval = objval,
+              status = NULL,
+              row_activity = row_activity,
+              sensitivity = df_sen))
 }
 
 #' Solve model using Gurobi -----
@@ -89,6 +112,16 @@ solve_gurobi <- function(lp) {
     ub = bounds$ub
   )
   soln <- gurobi::gurobi(model)
+
+  row_optimals <- as.vector(model$A %*% soln$x)
+  row_slacks   <- model$rhs - row_optimals
+  row_activity <- list(optimals = row_optimals, slacks = row_slacks)
+
+  return(list(solution = soln$x,
+              objval = soln$objval,
+              status = NULL,
+              row_activity = row_activity))
+
 }
 
 

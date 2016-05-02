@@ -71,10 +71,14 @@ idata_to_df <- function(idata){
 #' @keywords internal
 dfToMatrix <- function(df, numCol) {
   if (identical(names(df), c('i', 'j', 'v'))) {
-    m <- as.list(df)
-    m$nrow <- max(df$i)
-    m$ncol <- numCol
-    m <-  structure(m, class = 'simple_triplet_matrix')
+    m <- slam::simple_triplet_matrix(
+      i = df[,'i'],
+      j = df[,'j'],
+      v = df[,'v'],
+      nrow = max(df[,'i']),
+      ncol = numCol,
+      dimnames = NULL
+    )
     m <- fixSlamMatrix(m)
   } else {
     m <- as.simple_triplet_matrix(df)

@@ -11,12 +11,13 @@ config <- list(
 
 
 payload <- list(config = config, inputs = NULL)
-
+row_optimals <- c(1.0,0.0,1.0,0.0,0.0,0.0,1.0,0.0,0.0,14.2)
 
 test_that("Cell Tower LP is solved correctly by glpk", {
   payload$config$solver = 'glpk'
   sol = AlteryxSolve(payload)
   expect_equal(sol$objval, 7051)
+  expect_equal(sol$row_activity$optimals, row_optimals)
 })
 
 
@@ -27,4 +28,5 @@ test_that("Cell Tower LP is solved correctly by gurobi", {
   payload$config$solver = 'gurobi'
   out = capture.output(sol <- AlteryxSolve(payload))
   expect_equal(sol$objval, 7051)
+  expect_equal(sol$row_activity$optimals, row_optimals)
 })
