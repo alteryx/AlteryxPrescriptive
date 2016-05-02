@@ -9,7 +9,17 @@ solveModel <- function(x, solver, ...){
 }
 
 solveModel.default <- function(x, solver = 'glpk'){
-  ROI::ROI_solve(x, solver = solver)
+  sol <- ROI::ROI_solve(x, solver = solver)
+  row_optimals <- as.vector(slam::matprod_simple_triplet_matrix(x$constraints$L, sol$solution))
+  row_slacks   <- x$constraints$rhs - row_optimals
+  row_activity <- list(optimals = row_optimals, slacks = row_slacks)
+
+  # Return a list of
+  # - solution
+  # - objval
+  # - status
+  # - row_activity
+  c(sol, row_activity = row_activity)
 }
 
 solveModel.glpkAPI <- function(x, solver = 'glpkAPI', lp_attr){
