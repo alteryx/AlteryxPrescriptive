@@ -30,3 +30,11 @@ test_that("Cell Tower LP is solved correctly by gurobi", {
   expect_equal(sol$objval, 7051)
   expect_equal(sol$row_activity$optimals, row_optimals)
 })
+
+
+test_that("Cell Tower LP is solved correctly by symphony", {
+  payload$config$solver = 'symphony'
+  sol = AlteryxSolve(payload)
+  expect_equal(sol$objval, 7051)
+  expect_equal(sol$row_activity$optimals, row_optimals)
+})
