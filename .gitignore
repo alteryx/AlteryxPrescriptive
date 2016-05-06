@@ -4,3 +4,4 @@
 .Ruserdata
 *.log
 *sensitivity_report*.txt
+.DS_Store
