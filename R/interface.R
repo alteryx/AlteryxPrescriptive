@@ -100,6 +100,9 @@ findInputs = function(input, root){
   return(x)
 }
 
+#' Check if code is running inside an Alteryx R Tool.
+#'
+#'
 #' @export
 inAlteryx <- function(){
   'package:AlteryxRDataX' %in% search()
