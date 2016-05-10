@@ -27,6 +27,7 @@ test_that("Manual Input works for LP", {
 
 
 test_that("Manual Input works for LP", {
+  skip_if_not_installed('Rsymphony')
   payload$config$solver <- 'symphony'
   out = capture.output(sol <- AlteryxSolve(payload))
   expect_equal(sol$objval, 76.66667, tolerance = 0.001)

@@ -33,6 +33,7 @@ test_that("Cell Tower LP is solved correctly by gurobi", {
 
 
 test_that("Cell Tower LP is solved correctly by symphony", {
+  skip_if_not_installed('Rsymphony')
   payload$config$solver = 'symphony'
   sol = AlteryxSolve(payload)
   expect_equal(sol$objval, 7051)
