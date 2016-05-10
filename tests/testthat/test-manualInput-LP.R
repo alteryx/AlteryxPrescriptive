@@ -50,3 +50,26 @@ test_that("Manual Input works for LP", {
   out = capture.output(sol <- AlteryxSolve(payload1))
   expect_equal(sol$objval, 76.66667, tolerance = 0.001)
 })
+
+# Configuration with constraint names for some
+constraints = c(
+  "Capacity: 3x1 + 4x2 + 2x3 <= 60",
+  "2x1 + x2 + 2x3 <= 40",
+  "Demand: x1 + 3x2 + 2x3 <= 80"
+)
+objective = (
+  "2x1 + 4x2 + 3x3"
+)
+config <- list(
+  constraints = constraints,
+  objective = objective,
+  maximize = TRUE,
+  inputMode = 'manual',
+  solver = 'glpk'
+)
+
+test_that("Manual Input works for LP, when constraints have names", {
+  payload <- list(config = config, inputs = NULL)
+  out = capture.output(sol <- AlteryxSolve(payload))
+  expect_equal(sol$objval, 76.66667, tolerance = 0.001)
+})

@@ -40,7 +40,11 @@ clean_constr <- function(x) {
   trimmed_constr <- sapply(x, trim_newline)
   trimmed_constr <- sapply(trimmed_constr, trim_star)
   constr_names <- paste0("C", seq(1, length(x)))
-  named_constr   <- paste(constr_names, trimmed_constr, sep = ": ")
+  named_constr <- ifelse(
+    grepl(":", trimmed_constr),
+    trimmed_constr,
+    paste(constr_names, trimmed_constr, sep = ": ")
+  )
   constraints <- paste(named_constr, collapse = "\n  ")
   constraints
 }
