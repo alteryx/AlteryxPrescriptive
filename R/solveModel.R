@@ -52,7 +52,7 @@ solve_glpkAPI <- function(lp, attr) {
   # TODO: this following setup doesn't support double-sided inequalities.
   lb <- lp$constraints$rhs
   ub <- lb
-  type <- lp$constraints$dir
+  type <- as.character(lp$constraints$dir)
   type[type == "<="] <- GLP_UP
   type[type == ">="] <- GLP_LO
   type[type == "=="] <- GLP_FX
