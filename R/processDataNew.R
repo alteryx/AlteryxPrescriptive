@@ -29,6 +29,15 @@ df2matVar <- function(inputs){
     B2$rhs <- as.numeric(B2$rhs)
     inputs$A <- A
     inputs$B <- factor2char(B2)
+  } else {
+    A <- t(sapply(inputs$A[matRows, matCols, drop = F], as.numeric))
+    colnames(A) <- inputs$A$variable[matRows]
+    B <- cbind(
+      constraints = setdiff(colnames(inputs$A), 'variable'),
+      inputs$B
+    )
+    inputs$A <- A
+    inputs$B <- factor2char(B)
   }
   inputs$A <- as.simple_triplet_matrix(inputs$A)
   return(inputs)
