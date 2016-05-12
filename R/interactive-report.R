@@ -1,3 +1,7 @@
+#' Make variable report
+#'
+#' @param out output from AlteryxSolve
+#' @export
 makeVariableReport <- function(out){
   d <- data.frame(
     Variable = out$lp_attr$objective_vars_names,
@@ -5,7 +9,7 @@ makeVariableReport <- function(out){
     Value = out$solution,
     stringsAsFactors = FALSE
   )
-  d <- plyr::arrange(d, -Value)
+  d <- d[order(d$Value),]
   if (!is.null(types(out$OP)) && all(types(out$OP) == "B")){
     d <- d[d$Value == 1,]
   }
@@ -13,7 +17,10 @@ makeVariableReport <- function(out){
 }
 
 
-
+#' Make constraint report
+#'
+#' @param out output from AlteryxSolve
+#' @export
 makeConstraintReport <- function(out){
   d <- data.frame(
     constraint = out$lp_attr$constraint_names,
@@ -28,12 +35,34 @@ makeConstraintReport <- function(out){
 #' Make interactive report
 #'
 #' @param out output from AlteryxSolve
+#' @import DT
 #' @import AlteryxRviz
 #' @export
-makeInteractiveReport <- function(out){
-  library(magrittr)
-  library(AlteryxRviz)
-  library(DT)
+makeInteractiveReport <- function(out, nOutput = 3, ...){
+  tour = intro(list(
+    list(intro = 'Optimization'),
+    list(
+      intro = "Variables",
+      element = JS("document.querySelector('#variables')"),
+      numberPosition = 'right',
+      position = "right"
+    ),
+    list(
+      intro = 'Constraints',
+      element = JS("document.querySelector('#constraints')"),
+      numberPosition = 'right',
+      position = "right"
+    )
+  ), list(), button = '.navbar li>a', width = 90, height = 30)
+
+  activatePopup <- function(){
+    htmltools::tags$script("
+    $(document).ready(function(){
+      $('[data-toggle=popover]').popover()
+        document.querySelector('body div').style['font-size'] = null
+      })
+    ")
+  }
   d2 <- makeVariableReport(out)
   d3 <- d2 %>%
     datatable(
@@ -69,15 +98,21 @@ makeInteractiveReport <- function(out){
     formatStyle('slack',
       color = JS("Math.abs(value) > 0 ? 'green' : 'gray'")
     )
-  keen_dash(
-    Navbar2('Optimization'),
-    Row(
-      Panel(c(12, 8), d3, 'Optimal Solution')
+  title1 = panel_title("Variables", "These are variables", 'tooltip1b')
+  panel1 = Panel(c(12, 8), d3, title1, id = 'variables')
+
+  title2 = panel_title("Constraints", "These are constraints", "tooltip2b")
+  panel2 = Panel(c(12, 8), d5, title2, id = 'constraints')
+  iout <- keen_dash(
+    Navbar('Optimization',
+      navItem(icon('play'), 'Tour', href='#')
     ),
-    Row(
-      Panel(c(12, 8), d5, 'Optimal Solution')
-    )
+    Row(panel1),
+    Row(panel2),
+    tour,
+    activatePopup()
   )
+  renderInComposer(iout, nOutput = nOutput, ...)
 }
 
 
