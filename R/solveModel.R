@@ -14,15 +14,12 @@ solveModel.default <- function(x, solver = 'glpk'){
   row_slacks   <- x$constraints$rhs - row_optimals
   row_activity <- list(optimals = row_optimals, slacks = row_slacks)
 
-  # Return a list of
-  # - solution
-  # - objval
-  # - status
-  # - row_activity
-  list(solution = sol$solution,
-       objval = sol$objval,
-       status = sol$status,
-       row_activity = row_activity)
+  list(
+    solution = sol$solution,
+    objval = sol$objval,
+    status = sol$status,
+    row_activity = row_activity
+  )
 }
 
 solveModel.glpkAPI <- function(x, solver = 'glpkAPI', lp_attr){
@@ -59,13 +56,13 @@ solve_glpkAPI <- function(lp, attr) {
   type <- as.numeric(type)
   setRowsBndsGLPK(prob, 1:attr$n_constraints, lb, ub, type)
 
-  #Set the type and bounds of columns and the objective function using a function which
-  #has the ability to work with vectors.
+  # Set the type and bounds of columns and the objective function using a function which
+  # has the ability to work with vectors.
   bounds <- getBounds_glpkAPI(lp, attr$n_objective_vars)
   obj <- as.vector(terms(objective(lp))$L)
   setColsBndsObjCoefsGLPK(prob, 1:attr$n_objective_vars, bounds$lb, bounds$ub, obj, bounds$type)
 
-  #Load the constraint matrix.
+  # Load the constraint matrix.
   mm <- constraints(lp)$L
 
   ia <- mm$i
@@ -87,11 +84,13 @@ solve_glpkAPI <- function(lp, attr) {
   row_slacks   <- lp$constraints$rhs - row_optimals
   row_activity <- list(optimals = row_optimals, slacks = row_slacks)
 
-  return(list(solution = solution,
-              objval = objval,
-              status = NULL,
-              row_activity = row_activity,
-              sensitivity = df_sen))
+  list(
+    solution = solution,
+    objval = objval,
+    status = NULL,
+    row_activity = row_activity,
+    sensitivity = df_sen
+  )
 }
 
 #' Solve model using Gurobi -----
@@ -117,11 +116,12 @@ solve_gurobi <- function(lp) {
   row_slacks   <- model$rhs - row_optimals
   row_activity <- list(optimals = row_optimals, slacks = row_slacks)
 
-  return(list(solution = soln$x,
-              objval = soln$objval,
-              status = NULL,
-              row_activity = row_activity))
-
+  list(
+    solution = soln$x,
+    objval = soln$objval,
+    status = NULL,
+    row_activity = row_activity
+  )
 }
 
 
