@@ -12,10 +12,6 @@ readInputsFromXL <- function(path){
   library(readxl)
   sheets <- excel_sheets(path)
   inputs <- setNames(lapply(sheets, read_excel, path = path), sheets)
-  inputs <- lapply(inputs, function(input){
-    input[is.na(input)] <- 0
-    return(input)
-  })
 }
 
 library(testthat)

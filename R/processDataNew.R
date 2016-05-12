@@ -39,6 +39,7 @@ df2matVar <- function(inputs){
     inputs$A <- A
     inputs$B <- factor2char(B)
   }
+  inputs$A[is.na(inputs$A)] <- 0
   inputs$A <- as.simple_triplet_matrix(inputs$A)
   return(inputs)
 }
@@ -55,6 +56,7 @@ df2matCon <- function(inputs){
     inputs$A <- A
     inputs$B <- factor2char(B)
   }
+  inputs$A[is.na(inputs$A)] <- 0
   inputs$A <- as.simple_triplet_matrix(inputs$A)
   inputs
 }
@@ -70,7 +72,7 @@ df2matSlam <- function(df, numCol, ...){
       ncol = numCol,
       dimnames = NULL
     )
-    AlteryxPrescriptive:::fixSlamMatrix(m)
+    fixSlamMatrix(m)
   }
 }
 
