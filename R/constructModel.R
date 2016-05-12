@@ -103,7 +103,7 @@ getOPAttributes <- function(x) {
     problem_name = "",
     objective_name = "",
     objective_vars_names = as.character(x$O$variable),
-    constraint_names = addConstraintNames(nrow(x$A), x$B$cNames)
+    constraint_names = addConstraintNames(nrow(x$A), x$B$constraint)
   )
 }
 
@@ -117,8 +117,8 @@ addConstraintNames <- function(nConstraints, cNames = NULL){
 
 getNumObjective <- function(x) {
   temp <- table(x)
-  n_integer <- if (is.na(temp['I'])) 0 else temp['I']
-  n_binary  <- if (is.na(temp['B'])) 0 else temp['B']
+  n_integer <- if (is.na(temp['I'])) 0 else temp[['I']]
+  n_binary  <- if (is.na(temp['B'])) 0 else temp[['B']]
 
   list(
     total = length(x),
