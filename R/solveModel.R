@@ -8,7 +8,7 @@ solveModel <- function(x, solver, ...){
   UseMethod('solveModel')
 }
 
-solveModel.default <- function(x, solver = 'glpk'){
+solveModel.default <- function(x, solver = 'glpk', lp_attr){
   sol <- ROI::ROI_solve(x, solver = solver)
   row_optimals <- as.vector(slam::matprod_simple_triplet_matrix(x$constraints$L, sol$solution))
   row_slacks   <- x$constraints$rhs - row_optimals
@@ -18,7 +18,9 @@ solveModel.default <- function(x, solver = 'glpk'){
     solution = sol$solution,
     objval = sol$objval,
     status = sol$status,
-    row_activity = row_activity
+    row_activity = row_activity,
+    lp_attr = lp_attr,
+    OP = x
   )
 }
 
@@ -26,9 +28,9 @@ solveModel.glpkAPI <- function(x, solver = 'glpkAPI', lp_attr){
   solve_glpkAPI(x, lp_attr)
 }
 
-solveModel.gurobi <- function(x, solver = 'gurobi'){
+solveModel.gurobi <- function(x, solver = 'gurobi', lp_attr){
   if (requireNamespace('gurobi')){
-    solve_gurobi(x)
+    solve_gurobi(x, lp_attr)
   }
 }
 
@@ -60,7 +62,9 @@ solve_glpkAPI <- function(lp, attr) {
   # has the ability to work with vectors.
   bounds <- getBounds_glpkAPI(lp, attr$n_objective_vars)
   obj <- as.vector(terms(objective(lp))$L)
-  setColsBndsObjCoefsGLPK(prob, 1:attr$n_objective_vars, bounds$lb, bounds$ub, obj, bounds$type)
+  setColsBndsObjCoefsGLPK(
+    prob, 1:attr$n_objective_vars, bounds$lb, bounds$ub, obj, bounds$type
+  )
 
   # Load the constraint matrix.
   mm <- constraints(lp)$L
@@ -96,7 +100,7 @@ solve_glpkAPI <- function(lp, attr) {
 #' Solve model using Gurobi -----
 #'
 #' @keywords internal
-solve_gurobi <- function(lp) {
+solve_gurobi <- function(lp, lp_attr) {
   bounds <- getBounds_gurobi(lp)
   Q_ <- terms(objective(lp))$Q
   model <- list(
@@ -120,7 +124,9 @@ solve_gurobi <- function(lp) {
     solution = soln$x,
     objval = soln$objval,
     status = NULL,
-    row_activity = row_activity
+    row_activity = row_activity,
+    lp_attr = lp_attr,
+    OP = lp
   )
 }
 
@@ -139,6 +145,6 @@ AlteryxSolve <- function(x){
     invisible(solveModel(d2$OP, solver = 'glpkAPI', d2$OPAttributes))
   } else {
     class(d2$OP) <- c(class(d2$OP), x$config$solver)
-    invisible(solveModel(d2$OP, solver = x$config$solver))
+    invisible(solveModel(d2$OP, solver = x$config$solver, d2$OPAttributes))
   }
 }
