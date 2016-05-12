@@ -19,6 +19,7 @@ testFactory <- function(paths, solver = 'glpk', config, sol){
   config$solver <- solver
   results <- lapply(paths, function(path){
     test_that(paste('Testing ', path), {
+      skip_if_not_installed('readxl')
       if (grepl("min", basename(path))){
         config$maximize = FALSE
       }
