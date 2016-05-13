@@ -9,6 +9,7 @@ solveModel <- function(x, solver, ...){
 }
 
 solveModel.default <- function(x, solver = 'glpk', lp_attr){
+  requireNamespace('ROI.plugin.symphony', quietly = TRUE)
   sol <- ROI::ROI_solve(x, solver = solver)
   row_optimals <- as.vector(slam::matprod_simple_triplet_matrix(x$constraints$L, sol$solution))
   row_slacks   <- x$constraints$rhs - row_optimals
