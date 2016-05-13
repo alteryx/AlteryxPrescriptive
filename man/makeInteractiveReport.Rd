@@ -8,6 +8,10 @@ makeInteractiveReport(out, nOutput = 3, ...)
 }
 \arguments{
 \item{out}{output from AlteryxSolve}
+
+\item{nOutput}{output anchor to send html output to}
+
+\item{...}{other arguments to pass to renderInComposer}
 }
 \description{
 Make interactive report
