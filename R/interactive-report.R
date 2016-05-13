@@ -35,11 +35,13 @@ makeConstraintReport <- function(out){
 #' Make interactive report
 #'
 #' @param out output from AlteryxSolve
+#' @param nOutput output anchor to send html output to
+#' @param ... other arguments to pass to renderInComposer
 #' @import DT
-#' @import AlteryxRviz
 #' @export
 makeInteractiveReport <- function(out, nOutput = 3, ...){
-  tour = intro(list(
+  requireNamespace("AlteryxRviz", quietly = TRUE)
+  tour = AlteryxRviz::intro(list(
     list(intro = 'Optimization'),
     list(
       intro = "Variables",
@@ -98,21 +100,21 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
     formatStyle('slack',
       color = JS("Math.abs(value) > 0 ? 'green' : 'gray'")
     )
-  title1 = panel_title("Variables", "These are variables", 'tooltip1b')
-  panel1 = Panel(c(12, 8), d3, title1, id = 'variables')
+  title1 = AlteryxRviz::panel_title("Variables", "These are variables", 'tooltip1b')
+  panel1 = AlteryxRviz::Panel(c(12, 8), d3, title1, id = 'variables')
 
-  title2 = panel_title("Constraints", "These are constraints", "tooltip2b")
-  panel2 = Panel(c(12, 8), d5, title2, id = 'constraints')
-  iout <- keen_dash(
-    Navbar('Optimization',
-      navItem(icon('play'), 'Tour', href='#')
+  title2 = AlteryxRviz::panel_title("Constraints", "These are constraints", "tooltip2b")
+  panel2 = AlteryxRviz::Panel(c(12, 8), d5, title2, id = 'constraints')
+  iout <- AlteryxRviz::keen_dash(
+    AlteryxRviz::Navbar('Optimization',
+      AlteryxRviz::navItem(AlteryxRviz::icon('play'), 'Tour', href='#')
     ),
-    Row(panel1),
-    Row(panel2),
+    AlteryxRviz::Row(panel1),
+    AlteryxRviz::Row(panel2),
     tour,
     activatePopup()
   )
-  renderInComposer(iout, nOutput = nOutput, ...)
+  AlteryxRviz::renderInComposer(iout, nOutput = nOutput, ...)
 }
 
 
