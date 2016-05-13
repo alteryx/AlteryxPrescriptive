@@ -31,4 +31,6 @@ Suggests:
   gurobi,
   htmltools,
   htmlwidgets,
-  AlteryxRviz
+  AlteryxRviz,
+  Rsymphony,
+  ROI.plugin.symphony
