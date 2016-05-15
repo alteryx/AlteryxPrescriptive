@@ -92,7 +92,7 @@ constructModel.matrix_mode <- function(x, ...){
 
 ## Helper function: get optimization problem attributes for matrix input mode
 getOPAttributes <- function(x) {
-  num_obj <- getNumObjective(x$O$type)
+  num_obj <- getNumObjective(x$O)
 
   list(
     n_objective_vars = num_obj$total,
@@ -115,14 +115,23 @@ addConstraintNames <- function(nConstraints, cNames = NULL){
   }
 }
 
-getNumObjective <- function(x) {
-  temp <- table(x)
-  n_integer <- if (is.na(temp['I'])) 0 else temp[['I']]
-  n_binary  <- if (is.na(temp['B'])) 0 else temp[['B']]
+getNumObjective <- function(y) {
+  x <- y$type
+  if (is.null(x)){
+    list(
+      total = NROW(y),
+      n_integer = 0,
+      n_binary = 0
+    )
+  } else {
+    temp <- table(x)
+    n_integer <- if (is.na(temp['I'])) 0 else temp[['I']]
+    n_binary  <- if (is.na(temp['B'])) 0 else temp[['B']]
 
-  list(
-    total = length(x),
-    n_integer = n_integer,
-    n_binary = n_binary
-  )
+    list(
+      total = length(x),
+      n_integer = n_integer,
+      n_binary = n_binary
+    )
+  }
 }
