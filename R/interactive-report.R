@@ -5,11 +5,12 @@
 makeVariableReport <- function(out){
   d <- data.frame(
     Variable = out$lp_attr$objective_vars_names,
+    Value = signif(out$solution, 3),
     Coefficient = as.vector(out$OP$objective$L),
-    Value = out$solution,
+    Type = ROI::types(out$OP),
     stringsAsFactors = FALSE
   )
-  d <- d[order(d$Value),]
+  d <- d[order(-d$Value),]
   if (!is.null(types(out$OP)) && all(types(out$OP) == "B")){
     d <- d[d$Value == 1,]
   }
@@ -29,6 +30,7 @@ makeConstraintReport <- function(out){
     rhs = constraints(out$OP)$rhs,
     slack = out$row_activity$slacks
   )
+  d <- d[order(abs(d$slack)),]
   d
 }
 
@@ -57,6 +59,14 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
     )
   ), list(), button = '.navbar li>a', width = 90, height = 30)
 
+  styleTable <- htmlwidgets::JS(
+    "function(settings, json) {
+        $(this.api().table().header()).css({
+          'background-color': '#14a99d',
+          'color': 'white'
+        });
+    }"
+  )
   activatePopup <- function(){
     htmltools::tags$script("
     $(document).ready(function(){
@@ -68,10 +78,15 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
   d2 <- makeVariableReport(out)
   d3 <- d2 %>%
     datatable(
+      rownames = FALSE,
       filter = list(position = 'top', plain = TRUE),
-      options = list(pageLength = 5),
-      escape = FALSE
+      options = list(
+        pageLength = 5,
+        initComplete = styleTable,
+        escape = FALSE
+      )
     ) %>%
+    formatSignif("Value") %>%
     formatStyle('Value',
       background = styleColorBar(d2$Value, 'steelblue'),
       backgroundSize = '100% 90%',
@@ -88,9 +103,16 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
   d4 <- makeConstraintReport(out)
   d5 <- d4 %>%
     datatable(
+      rownames = FALSE,
       filter = list(position = 'top', plain = TRUE),
-      options = list(pageLength = 5)
+      options = list(
+        initComplete = styleTable,
+        escape = FALSE,
+        pageLength = 5
+      )
     ) %>%
+    formatSignif("activity", 3) %>%
+    formatSignif("slack", 3) %>%
     formatStyle('activity',
       background = styleColorBar(d4$activity, 'steelblue'),
       backgroundSize = '100% 90%',
@@ -100,11 +122,40 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
     formatStyle('slack',
       color = JS("Math.abs(value) > 0 ? 'green' : 'gray'")
     )
-  title1 = AlteryxRviz::panel_title("Variables", "These are variables", 'tooltip1b')
-  panel1 = AlteryxRviz::Panel(c(12, 8), d3, title1, id = 'variables')
+
+  # title1 = tags$span(
+  #   tags$span("Optimal Solution"),
+  #   tags$span(class = "label label-success", out$objval)
+  # )
+  title1 = AlteryxRviz::panel_title("Optimal Solution", "These are variables", 'tooltip1b')
+  panel1 = AlteryxRviz::Panel(c(12, 6),
+    tags$div(class = 'wrapper',
+      tags$p(class = "lead",
+        tags$span("Objective Function Value: "),
+        tags$span(class = 'label label-success', out$objval)
+      ),
+      d3
+    ),
+    title1, id = 'variables'
+  )
 
   title2 = AlteryxRviz::panel_title("Constraints", "These are constraints", "tooltip2b")
-  panel2 = AlteryxRviz::Panel(c(12, 8), d5, title2, id = 'constraints')
+  panel2 = AlteryxRviz::Panel(c(12, 6), tags$div(class = 'wrapper', d5),
+    title2, id = 'constraints'
+  )
+
+  objective_function = list(
+    Solution = list(
+      value = out$objval,
+      title = 'Optimal Value',
+      definition = "<p>This is the optimal value</p>"
+    )
+  )
+  solPanel <-  Panel(
+    c(12, 4),
+    AlteryxRviz::infobox(objective_function, div = 'col-xs-12 col-md-4'),
+    'Objective Value'
+  )
   iout <- AlteryxRviz::keen_dash(
     AlteryxRviz::Navbar('Optimization',
       AlteryxRviz::navItem(AlteryxRviz::icon('play'), 'Tour', href='#')
@@ -112,7 +163,13 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
     AlteryxRviz::Row(panel1),
     AlteryxRviz::Row(panel2),
     tour,
-    activatePopup()
+    activatePopup(),
+    tags$style("
+      .wrapper{margin-left: 20px; margin-right: 20px;}
+      table.dataTable thead th, table.dataTable thead td{
+        border-bottom: 0;
+      }
+    ")
   )
   AlteryxRviz::renderInComposer(iout, nOutput = nOutput, ...)
 }
