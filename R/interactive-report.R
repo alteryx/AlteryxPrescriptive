@@ -3,11 +3,12 @@
 #' @param out output from AlteryxSolve
 #' @export
 makeVariableReport <- function(out){
+  typs <- ROI::types(out$OP)
   d <- data.frame(
     Variable = out$lp_attr$objective_vars_names,
-    Value = signif(out$solution, 3),
+    Value = out$solution,
     Coefficient = as.vector(out$OP$objective$L),
-    Type = ROI::types(out$OP),
+    Type = if (is.null(typs)) "C" else typs,
     stringsAsFactors = FALSE
   )
   d <- d[order(-d$Value),]
@@ -86,7 +87,7 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
         escape = FALSE
       )
     ) %>%
-    formatSignif("Value") %>%
+    #formatSignif("Value") %>%
     formatStyle('Value',
       background = styleColorBar(d2$Value, 'steelblue'),
       backgroundSize = '100% 90%',
@@ -173,6 +174,22 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
   )
   AlteryxRviz::renderInComposer(iout, nOutput = nOutput, ...)
 }
+
+#' Get problem summary
+#'
+#'
+#' @export
+getProblemSummary <- function(out){
+  data.frame(
+    Description = c('Problem Type', 'Objective', 'Objective Value',
+      'Continuous Variables', 'Non-Binary Integer Variables',
+      'Binary Variables', 'Number of Variables', 'Number of Constraints',
+      'Number of Nonzer Coefficients'
+    )
+
+  )
+}
+
 
 
 
