@@ -40,12 +40,12 @@ makeConstraintReport <- function(out){
 #' @param out output from AlteryxSolve
 #' @param nOutput output anchor to send html output to
 #' @param ... other arguments to pass to renderInComposer
-#' @import DT
+#' @import htmltools htmlwidgets AlteryxRviz jsonlite DT
 #' @export
 makeInteractiveReport <- function(out, nOutput = 3, ...){
   requireNamespace("AlteryxRviz", quietly = TRUE)
   myTableClass = 'table table-condensed table-striped'
-  tour = AlteryxRviz::intro(list(
+  tour = intro(list(
     list(intro = 'Optimization'),
     list(
       intro = "Variables",
@@ -59,7 +59,7 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
     )
   ), list(), button = '.navbar li>a', width = 90, height = 30)
 
-  styleTable <- htmlwidgets::JS(
+  styleTable <- JS(
     "function(settings, json) {
         $(this.api().table().header()).css({
           'background-color': '#14a99d',
@@ -68,7 +68,7 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
     }"
   )
   activatePopup <- function(){
-    htmltools::tags$script("
+    tags$script("
     $(document).ready(function(){
       $('[data-toggle=popover]').popover()
         document.querySelector('body div').style['font-size'] = null
@@ -90,7 +90,7 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
       )
     ) %>%
     #formatSignif("Value") %>%
-    formatStyle('Value',
+    DT::formatStyle('Value',
       background = styleColorBar(d2$Value, 'steelblue'),
       backgroundSize = '100% 90%',
       backgroundRepeat = 'no-repeat',
@@ -117,8 +117,8 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
         pageLength = 5
       )
     ) %>%
-    formatSignif("Value", 3) %>%
-    formatSignif("Slack", 3) %>%
+    #DT::formatSignif("Value", 3) %>%
+    #DT::formatSignif("Slack", 3) %>%
     formatStyle('Value',
       background = styleColorBar(d4$Value, 'steelblue'),
       backgroundSize = '100% 90%',
@@ -129,8 +129,8 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
       background = JS("Math.abs(value) > 0 ? 'white' : 'lightgreen'")
     )
 
-  title1 = AlteryxRviz::panel_title("Decision Variables", "These are variables", 'tooltip1b')
-  panel1 = AlteryxRviz::Panel(c(12, 8), d3,
+  title1 = panel_title("Decision Variables", "These are variables", 'tooltip1b')
+  panel1 = Panel(c(12, 8), d3,
     title1, id = 'variables'
   )
   A = getProblemSummary(out)
@@ -147,14 +147,14 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
       bSort = F
     )
   )
-  panel1a = AlteryxRviz::Panel(c(12, 4),
+  panel1a = Panel(c(12, 4),
     summaryReport,
     'Solution Summary'
   )
-  title2 = AlteryxRviz::panel_title(
+  title2 = panel_title(
     "Constraints", "These are constraints", "tooltip2b"
   )
-  panel2 = AlteryxRviz::Panel(c(12, 12), tags$div(class = 'wrapper', d5),
+  panel2 = Panel(c(12, 12), tags$div(class = 'wrapper', d5),
     title2, id = 'constraints'
   )
 
@@ -167,22 +167,15 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
   )
   solPanel <-  Panel(
     c(12, 4),
-    AlteryxRviz::infobox(objective_function, div = 'col-xs-12 col-md-4'),
+    infobox(objective_function, div = 'col-xs-12 col-md-4'),
     'Objective Value'
   )
-  iout <- AlteryxRviz::keen_dash(
-    AlteryxRviz::Navbar('Optimization',
-      AlteryxRviz::navItem(AlteryxRviz::icon('play'), 'Tour', href='#')
+  iout <- keen_dash(
+    Navbar('Optimization',
+      navItem(icon('play'), 'Tour', href='#')
     ),
-    # Row(
-    #   div(class = 'col-xs-12 col-md-4', AlteryxRviz::Row(panel1a)),
-    #   div(class = 'col-xs-12 col-md-8',
-    #       AlteryxRviz::Row(panel1),
-    #       AlteryxRviz::Row(panel2)
-    #   )
-    # ),
-    AlteryxRviz::Row(panel1a, panel1),
-    AlteryxRviz::Row(panel2),
+    Row(panel1a, panel1),
+    Row(panel2),
     tour,
     activatePopup(),
     tags$style("
@@ -195,12 +188,13 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
       }
     ")
   )
-  AlteryxRviz::renderInComposer(iout, nOutput = nOutput, ...)
+  renderInComposer(iout, nOutput = nOutput, ...)
 }
 
 #' Get problem summary
 #'
 #'
+#' @param out object returned by AlteryxSolve
 #' @export
 getProblemSummary <- function(out){
   data.frame(
@@ -227,6 +221,7 @@ getProblemSummary <- function(out){
 #'
 #'
 #' @param out object returned by AlteryxSolve
+#' @param asJSON whether to return json values or not.
 #' @export
 makeDataOutput <- function(out, asJSON = FALSE){
   d1 = list(
