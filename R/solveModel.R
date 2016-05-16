@@ -94,6 +94,8 @@ solve_glpkAPI <- function(lp, attr) {
     objval = objval,
     status = NULL,
     row_activity = row_activity,
+    lp_attr = attr,
+    OP = lp,
     sensitivity = df_sen
   )
 }
