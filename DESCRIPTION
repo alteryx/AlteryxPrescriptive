@@ -25,12 +25,13 @@ Imports:
   ROI.plugin.quadprog,
   slam,
   glpkAPI,
+  htmltools,
+  htmlwidgets,
+  AlteryxRviz,
+  jsonlite,
   DT
 Suggests:
   testthat,
   gurobi,
-  htmltools,
-  htmlwidgets,
-  AlteryxRviz,
   Rsymphony,
   ROI.plugin.symphony
