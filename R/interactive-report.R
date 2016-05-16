@@ -205,7 +205,7 @@ getProblemSummary <- function(out){
     ),
     Value = c(
       out$objval,
-      'LP',
+      getProblemType(out),
       if (out$OP$maximum) 'Maximize' else 'Minimize',
       out$lp_attr$n_objective_vars,
       out$lp_attr$n_integer_vars,
@@ -236,6 +236,24 @@ makeDataOutput <- function(out, asJSON = FALSE){
       jsonlite::toJSON(x)
     })
   )
+}
+
+
+#' Detect problem type based on class of OP object and types of variables
+#'
+#'
+#' @param out object returned by AlteryxSolve
+#' @export
+getProblemType <- function(out){
+  pType <- if (inherits(out$OP, 'quadprog')){
+    'QP'
+  } else if (out$lp_attr$n_integer_vars == 0){
+    'LP'
+  } else if (out$lp_attr$n_objective_vars > out$lp_attr$n_integer_vars){
+    'MILP'
+  } else {
+    'IP'
+  }
 }
 
 
