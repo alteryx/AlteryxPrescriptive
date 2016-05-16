@@ -25,13 +25,13 @@ makeVariableReport <- function(out){
 #' @export
 makeConstraintReport <- function(out){
   d <- data.frame(
-    constraint = out$lp_attr$constraint_names,
-    activity = out$row_activity$optimals,
-    dir = constraints(out$OP)$dir,
-    rhs = constraints(out$OP)$rhs,
-    slack = out$row_activity$slacks
+    Constraint = out$lp_attr$constraint_names,
+    Value = out$row_activity$optimals,
+    Direction = constraints(out$OP)$dir,
+    RHS = constraints(out$OP)$rhs,
+    Slack = out$row_activity$slacks
   )
-  d <- d[order(abs(d$slack)),]
+  d <- d[order(abs(d$Slack)),]
   d
 }
 
@@ -44,19 +44,18 @@ makeConstraintReport <- function(out){
 #' @export
 makeInteractiveReport <- function(out, nOutput = 3, ...){
   requireNamespace("AlteryxRviz", quietly = TRUE)
+  myTableClass = 'table table-condensed table-striped'
   tour = AlteryxRviz::intro(list(
     list(intro = 'Optimization'),
     list(
       intro = "Variables",
       element = JS("document.querySelector('#variables')"),
-      numberPosition = 'right',
-      position = "right"
+      numberPosition = 'left'
     ),
     list(
       intro = 'Constraints',
       element = JS("document.querySelector('#constraints')"),
-      numberPosition = 'right',
-      position = "right"
+      position = "auto"
     )
   ), list(), button = '.navbar li>a', width = 90, height = 30)
 
@@ -79,11 +78,14 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
   d2 <- makeVariableReport(out)
   d3 <- d2 %>%
     datatable(
+      class = myTableClass,
       rownames = FALSE,
       filter = list(position = 'top', plain = TRUE),
       options = list(
+        info = F,
+        sDom = 'tip',
         pageLength = 5,
-        initComplete = styleTable,
+        #initComplete = styleTable,
         escape = FALSE
       )
     ) %>%
@@ -104,44 +106,55 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
   d4 <- makeConstraintReport(out)
   d5 <- d4 %>%
     datatable(
+      class = myTableClass,
       rownames = FALSE,
       filter = list(position = 'top', plain = TRUE),
       options = list(
-        initComplete = styleTable,
+        info = F,
+        sDom = 'tip',
+        #initComplete = styleTable,
         escape = FALSE,
         pageLength = 5
       )
     ) %>%
-    formatSignif("activity", 3) %>%
-    formatSignif("slack", 3) %>%
-    formatStyle('activity',
-      background = styleColorBar(d4$activity, 'steelblue'),
+    formatSignif("Value", 3) %>%
+    formatSignif("Slack", 3) %>%
+    formatStyle('Value',
+      background = styleColorBar(d4$Value, 'steelblue'),
       backgroundSize = '100% 90%',
       backgroundRepeat = 'no-repeat',
       backgroundPosition = 'center'
     ) %>%
-    formatStyle('slack',
-      color = JS("Math.abs(value) > 0 ? 'green' : 'gray'")
+    formatStyle('Slack',
+      background = JS("Math.abs(value) > 0 ? 'white' : 'lightgreen'")
     )
 
-  # title1 = tags$span(
-  #   tags$span("Optimal Solution"),
-  #   tags$span(class = "label label-success", out$objval)
-  # )
-  title1 = AlteryxRviz::panel_title("Optimal Solution", "These are variables", 'tooltip1b')
-  panel1 = AlteryxRviz::Panel(c(12, 6),
-    tags$div(class = 'wrapper',
-      tags$p(class = "lead",
-        tags$span("Objective Function Value: "),
-        tags$span(class = 'label label-success', out$objval)
-      ),
-      d3
-    ),
+  title1 = AlteryxRviz::panel_title("Decision Variables", "These are variables", 'tooltip1b')
+  panel1 = AlteryxRviz::Panel(c(12, 8), d3,
     title1, id = 'variables'
   )
-
-  title2 = AlteryxRviz::panel_title("Constraints", "These are constraints", "tooltip2b")
-  panel2 = AlteryxRviz::Panel(c(12, 6), tags$div(class = 'wrapper', d5),
+  A = getProblemSummary(out)
+  A[1,'Value'] = sprintf(
+    "<span class='label label-success' style='font-size:medium;'>%s</span>", A[1,'Value']
+  )
+  summaryReport <- datatable(
+    class = myTableClass,
+    A,
+    rownames = FALSE,
+    escape = FALSE,
+    options = list(
+      sDom = 't',
+      bSort = F
+    )
+  )
+  panel1a = AlteryxRviz::Panel(c(12, 4),
+    summaryReport,
+    'Solution Summary'
+  )
+  title2 = AlteryxRviz::panel_title(
+    "Constraints", "These are constraints", "tooltip2b"
+  )
+  panel2 = AlteryxRviz::Panel(c(12, 12), tags$div(class = 'wrapper', d5),
     title2, id = 'constraints'
   )
 
@@ -161,14 +174,24 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
     AlteryxRviz::Navbar('Optimization',
       AlteryxRviz::navItem(AlteryxRviz::icon('play'), 'Tour', href='#')
     ),
-    AlteryxRviz::Row(panel1),
+    # Row(
+    #   div(class = 'col-xs-12 col-md-4', AlteryxRviz::Row(panel1a)),
+    #   div(class = 'col-xs-12 col-md-8',
+    #       AlteryxRviz::Row(panel1),
+    #       AlteryxRviz::Row(panel2)
+    #   )
+    # ),
+    AlteryxRviz::Row(panel1a, panel1),
     AlteryxRviz::Row(panel2),
     tour,
     activatePopup(),
     tags$style("
-      .wrapper{margin-left: 20px; margin-right: 20px;}
+      /* .wrapper{margin-left: 20px; margin-right: 20px;} */
       table.dataTable thead th, table.dataTable thead td{
         border-bottom: 0;
+      }
+      div.DTS div.dataTables_scrollBody {
+        background: none;
       }
     ")
   )
@@ -181,12 +204,42 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
 #' @export
 getProblemSummary <- function(out){
   data.frame(
-    Description = c('Problem Type', 'Objective', 'Objective Value',
-      'Continuous Variables', 'Non-Binary Integer Variables',
-      'Binary Variables', 'Number of Variables', 'Number of Constraints',
-      'Number of Nonzer Coefficients'
-    )
+    Description = c('Objective Value', 'Problem Type', 'Objective',
+      'Number of Variables', 'Non-Binary Integer Variables',
+      'Binary Variables', 'Number of Constraints',
+      'Number of Nonzero Coefficients'
+    ),
+    Value = c(
+      out$objval,
+      'LP',
+      if (out$OP$maximum) 'Maximize' else 'Minimize',
+      out$lp_attr$n_objective_vars,
+      out$lp_attr$n_integer_vars,
+      out$lp_attr$n_binary_vars,
+      out$lp_attr$n_constraints,
+      out$lp_attr$n_nonzeros
+    ),
+    stringsAsFactors = F
+  )
+}
 
+#' Make data output
+#'
+#'
+#' @param out object returned by AlteryxSolve
+#' @export
+makeDataOutput <- function(out, asJSON = FALSE){
+  d1 = list(
+    summary = getProblemSummary(out),
+    variables = makeVariableReport(out),
+    constraints = makeConstraintReport(out)
+  )
+  if (!asJSON) return(d1)
+  data.frame(
+    name = names(d1),
+    value = sapply(unname(d1), function(x){
+      jsonlite::toJSON(x)
+    })
   )
 }
 
