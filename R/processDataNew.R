@@ -15,6 +15,7 @@ factor2char <- function(df){
 }
 
 df2matVar <- function(inputs){
+  inputs$A <- factor2char(inputs$A)
   matCols <- !(names(inputs$A) %in% c("variable"))
   matRows <- !(inputs$A$variable %in% c("dir", "description", "rhs"))
   if (!("B" %in% names(inputs))) {
