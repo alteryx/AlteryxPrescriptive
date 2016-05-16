@@ -130,7 +130,7 @@ getNumObjective <- function(y) {
 
     list(
       total = length(x),
-      n_integer = n_integer,
+      n_integer = n_integer + n_binary,
       n_binary = n_binary
     )
   }

@@ -199,7 +199,7 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
 getProblemSummary <- function(out){
   data.frame(
     Description = c('Objective Value', 'Problem Type', 'Objective',
-      'Number of Variables', 'Non-Binary Integer Variables',
+      'Number of Variables', 'Integer Variables (including Binary)',
       'Binary Variables', 'Number of Constraints',
       'Number of Nonzero Coefficients'
     ),
