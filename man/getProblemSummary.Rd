@@ -6,6 +6,9 @@
 \usage{
 getProblemSummary(out)
 }
+\arguments{
+\item{out}{object returned by AlteryxSolve}
+}
 \description{
 Get problem summary
 }

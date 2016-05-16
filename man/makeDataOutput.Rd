@@ -8,6 +8,8 @@ makeDataOutput(out, asJSON = FALSE)
 }
 \arguments{
 \item{out}{object returned by AlteryxSolve}
+
+\item{asJSON}{whether to return json values or not.}
 }
 \description{
 Make data output
