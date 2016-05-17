@@ -119,14 +119,14 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
     ) %>%
     #DT::formatSignif("Value", 3) %>%
     #DT::formatSignif("Slack", 3) %>%
-    formatStyle('Value',
-      background = styleColorBar(d4$Value, 'steelblue'),
-      backgroundSize = '100% 90%',
-      backgroundRepeat = 'no-repeat',
-      backgroundPosition = 'center'
-    ) %>%
+    # formatStyle('Value',
+    #   background = styleColorBar(d4$Value, 'steelblue'),
+    #   backgroundSize = '100% 90%',
+    #   backgroundRepeat = 'no-repeat',
+    #   backgroundPosition = 'center'
+    # ) %>%
     formatStyle('Slack',
-      background = JS("Math.abs(value) > 0 ? 'white' : 'lightgreen'")
+      background = JS("Math.abs(value) > 0 ? 'white' : 'lightpink'")
     )
 
   title1 = panel_title("Decision Variables", "These are variables", 'tooltip1b')
@@ -147,9 +147,10 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
       bSort = F
     )
   )
+  optimText <- commonmark::markdown_html(capture.output(out$OP)[-1])
   panel1a = Panel(c(12, 4),
     summaryReport,
-    'Solution Summary'
+    panel_title('Solution Summary', optimText, 'dummy')
   )
   title2 = panel_title(
     "Constraints", "These are constraints", "tooltip2b"
@@ -221,21 +222,33 @@ getProblemSummary <- function(out){
 #'
 #'
 #' @param out object returned by AlteryxSolve
-#' @param asJSON whether to return json values or not.
+#' @param format pipe, json or list
+#' @importFrom plyr ldply
 #' @export
-makeDataOutput <- function(out, asJSON = FALSE){
+makeDataOutput <- function(out, format = 'pipe'){
   d1 = list(
     summary = getProblemSummary(out),
     variables = makeVariableReport(out),
     constraints = makeConstraintReport(out)
   )
-  if (!asJSON) return(d1)
-  data.frame(
-    name = names(d1),
-    value = sapply(unname(d1), function(x){
-      jsonlite::toJSON(x)
+  if (format == "json"){
+    data.frame(
+      name = names(d1),
+      value = sapply(unname(d1), function(x){
+        jsonlite::toJSON(x)
+      })
+    )
+  } else if (format == 'pipe'){
+    ldply(names(d1), function(k){
+      data.frame(name = k, value = df2pipe(d1[[k]]))
     })
-  )
+  } else {
+    d1
+  }
+}
+
+df2pipe <- function(df, quote = F, ...){
+  capture.output(write.table(df, sep = "|", quote = quote, row.names = F, ...))
 }
 
 
