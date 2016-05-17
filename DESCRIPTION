@@ -29,7 +29,9 @@ Imports:
   htmlwidgets,
   AlteryxRviz,
   jsonlite,
-  DT
+  DT,
+  plyr,
+  commonmark
 Suggests:
   testthat,
   gurobi,
