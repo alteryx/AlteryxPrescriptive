@@ -222,7 +222,7 @@ getProblemSummary <- function(out){
 #'
 #'
 #' @param out object returned by AlteryxSolve
-#' @param format pipe, json or list
+#' @param format pipe, json, simple or list
 #' @importFrom plyr ldply
 #' @export
 makeDataOutput <- function(out, format = 'pipe'){
@@ -242,6 +242,10 @@ makeDataOutput <- function(out, format = 'pipe'){
     ldply(names(d1), function(k){
       data.frame(name = k, value = df2pipe(d1[[k]]))
     })
+  } else if (format == 'simple') {
+    d2 <- setNames(d1$summary[1,], c('name', 'value'))
+    d3 <- setNames(d1$variables[,1:2], c('name', 'value'))
+    rbind(d2, d3)
   } else {
     d1
   }

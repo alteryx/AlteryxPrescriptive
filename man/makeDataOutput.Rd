@@ -4,12 +4,12 @@
 \alias{makeDataOutput}
 \title{Make data output}
 \usage{
-makeDataOutput(out, asJSON = FALSE)
+makeDataOutput(out, format = "pipe")
 }
 \arguments{
 \item{out}{object returned by AlteryxSolve}
 
-\item{asJSON}{whether to return json values or not.}
+\item{format}{pipe, json, simple or list}
 }
 \description{
 Make data output
