@@ -34,16 +34,12 @@ radioInput = function(x, default = FALSE){
 
 #' @export
 #' @rdname questions
-textInput = function(x, default = '[""]'){
-  if (x == "" ||  grepl('^%Question\\.(.*)%$', x) || grepl('^%Engine\\.(.*)%$', x)){
+textInput = function(x, default = ''){
+  inWorkflow <- getOption('alteryx.inworkflow', FALSE)
+  if (!inWorkflow && (x == "" ||  grepl('^%Question\\.(.*)%$', x) || grepl('^%Engine\\.(.*)%$', x))){
     default
   } else {
     x
-    #if (grepl("^(\\{|\\[)", x)) {
-    #  jsonlite::fromJSON(paste0('"', x, '"'))
-    #} else {
-    #  x
-    #}
   }
 }
 
@@ -61,7 +57,8 @@ listInput = function(x, default = '[""]'){
 #' @export
 #' @rdname questions
 dropdownInput = function(x, default = ""){
-  if (x == "" || grepl('^%Question\\.(.*)%$', x)){
+  inWorkflow <- getOption('alteryx.inworkflow', FALSE)
+  if (!inWorkflow && (x == "" || grepl('^%Question\\.(.*)%$', x))){
     default
   } else {
     x

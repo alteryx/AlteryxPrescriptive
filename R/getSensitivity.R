@@ -18,11 +18,6 @@ getDataLines <- function(start_end) {
   aa
 }
 
-# sensitivityHelper <- function(block_start, block_end) {
-#   ind <- getDataLines(block_start, block_end)
-#
-# }
-
 fillNAs <- function(ll) {
   n <- length(ll)
   inds <- 1:n
@@ -57,10 +52,8 @@ fill <- function(ll) {
 }
 
 # Parse sensitivity report into a list of 2 data.frames.
-#    1) constraintsRHS:
-#             sensitivity report on change of constraint eqn RHS
-#    2) objCoeff:
-#             sensitivity report on change of  objective coefficients
+# 1. constraintsRHS: sensitivity report on change of constraint eqn RHS
+# 2. objCoeff: sensitivity report on change of  objective coefficients
 getSensitivity <- function(fileName) {
   solData <- readLines(fileName)
   block_lines <- getBlockLines(solData)
