@@ -1,7 +1,7 @@
 Package: AlteryxPrescriptive
 Type: Package
 Title: Simulation and Optimization Tools in Alteryx
-Version: 0.4.2
+Version: 0.4.3
 Authors@R: c(
     person("Ramnath", "Vaidyanathan", role = c("aut", "cre"), email = "ramnath@alteryx.com"),
     person("Kuo", "Liu", role = "aut"),
@@ -10,7 +10,7 @@ Authors@R: c(
     person("Dan", "Putler", role = "aut"),
     person(family = "Alteryx", role = "cph")
    )
-Description: This package contains code that support the simulation and optimization tools
+Description: This package contains code that support the optimization tools
   in Alteryx.
 License: GPL-3
 LazyData: TRUE
