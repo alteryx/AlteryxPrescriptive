@@ -81,13 +81,13 @@ fixMatrixO <- function(O){
   nVar = NROW(O)
   lb <- rep(0, nVar)
   if ('lb' %in% names(O)){
-    lb[!is.na(O$lb)] = O$lb[!is.na(O$lb)]
+    lb[!is.na(O$lb)] <- as.numeric(as.character(O$lb[!is.na(O$lb)]))
   }
   O$lb = lb
 
   ub <- rep(Inf, nVar)
   if ('ub' %in% names(O)){
-    ub[!is.na(O$ub)] <- O$ub[!is.na(O$ub)]
+    ub[!is.na(O$ub)] <- as.numeric(as.character(O$ub[!is.na(O$ub)]))
   }
   O$ub = ub
 
