@@ -1,4 +1,4 @@
-processData <- function(idata){
+processData2 <- function(idata){
   nVar <- NROW(idata$O)
 
   if (!("B" %in% names(idata))) {

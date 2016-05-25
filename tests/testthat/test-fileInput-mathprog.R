@@ -36,3 +36,9 @@ test_that("Basic LP is solved correctly by gurobi", {
   out = capture.output(sol <- AlteryxSolve(payload))
   expect_equal(sol$objval, 34)
 })
+
+test_that("Stigler Diet problem is solved correctly by glpk", {
+  payload$config$filePath <- getSampleData('stigler.mod')
+  payload$config$maximize <- FALSE
+  sol <- AlteryxSolve(payload)
+})

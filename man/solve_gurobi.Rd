@@ -4,7 +4,7 @@
 \alias{solve_gurobi}
 \title{Solve model using Gurobi -----}
 \usage{
-solve_gurobi(lp)
+solve_gurobi(lp, lp_attr)
 }
 \description{
 Solve model using Gurobi -----
