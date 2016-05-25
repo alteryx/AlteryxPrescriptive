@@ -83,13 +83,13 @@ fixMatrixO <- function(O){
   if ('lb' %in% names(O)){
     lb[!is.na(O$lb)] = O$lb[!is.na(O$lb)]
   }
-  O$lb = lb
+  O$lb = as.numeric(lb)
 
   ub <- rep(Inf, nVar)
   if ('ub' %in% names(O)){
     ub[!is.na(O$ub)] <- O$ub[!is.na(O$ub)]
   }
-  O$ub = ub
+  O$ub = as.numeric(ub)
 
   if (!is.null(O$type)){
     O$type <- as.character(O$type)
@@ -99,6 +99,7 @@ fixMatrixO <- function(O){
 
 processData <- function(inputs){
   matType <- detectMatrixType(inputs$A)
+  inputs <- lapply(inputs, factor2char)
   inputs$O <- fixMatrixO(inputs$O)
   nVar = NROW(inputs$O)
   if (matType == "slam"){
