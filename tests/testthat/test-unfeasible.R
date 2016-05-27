@@ -3,8 +3,7 @@ context("Solutions not available")
 config <- list(
   inputMode = "matrix",
   problemType = "lp",
-  maximize = FALSE,
-  solver = 'glpk',
+  maximize = TRUE,
   returnSensitivity = FALSE
 )
 
@@ -27,17 +26,30 @@ inputs$A <- data.frame(
   C1 = c(18, 0, 0, 1, 0),
   C2 = c(21, 0, 0, 1, 0),
   C3 = c(28, 0, 0, 1, 0),
-  D1 = c(10, 0, 0, 0, 1),
+  D1 = c(14, 0, 0, 0, 1),
   D2 = c(15, 0, 0, 0, 1),
   D3 = c(18, 0, 0, 0, 1),
   D4 = c(24, 0, 0, 0, 1)
 )
 
+
 inputs$B <- data.frame(
-  dir = rep("<=", 5),
+  dir = c("<=", "==", "==", "==", "=="),
   rhs = c(60, 1, 1, 1, 1)
 )
 
-
 payload <- list(config = config, inputs = inputs)
-sol <- AlteryxSolve(payload)
+
+
+test_that("No feasible solution, with glpk", {
+  payload$config$solver <- 'glpk'
+  sol <- AlteryxSolve(payload)
+  expect_equal(sol$status$code, 1)
+})
+
+
+test_that("No feasible solution, with symphony", {
+  payload$config$solver <- 'symphony'
+  sol <- AlteryxSolve(payload)
+  expect_equal(sol$status$code, 1)
+})
