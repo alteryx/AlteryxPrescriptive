@@ -36,6 +36,7 @@ test_that("No feasible solution, with glpk", {
 
 
 test_that("No feasible solution, with symphony", {
+  skip_if_not_installed('Rsymphony')
   payload$config$solver <- 'symphony'
   sol <- AlteryxSolve(payload)
   expect_equal(sol$status$code, 1)
