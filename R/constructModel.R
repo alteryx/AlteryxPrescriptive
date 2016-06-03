@@ -48,7 +48,7 @@ constructModel.file_mode <- function(x, ...){
 # If the manual input UI creates a temp file in the CPLEX_LP format, and returns a path to it
 #' @export
 constructModel.manual_mode <- function(x, ...){
-  #checkInputs_manual_mode(x)
+  checkInputs_manual_mode(x)
   manualInput = Filter(Negate(is.null), list(
     constraints = x$config$constraints,
     objective = x$config$objective,
@@ -85,7 +85,7 @@ constructModel.matrix_mode <- function(x, ...){
   op_obj <- OP(
     objective = objective,
     constraints = constraints,
-    # types = idata$O$type,
+    types = idata$O$type,
     bounds = getBounds_matrix(idata),
     maximum = x$config$maximize
   )
