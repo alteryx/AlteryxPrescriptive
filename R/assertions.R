@@ -16,7 +16,7 @@ checkInputs_matrix_mode <- function(x, ...){
     x$O %has_name% 'variable',
     x$O %has_name% 'coefficient'
   )
-  are_equal(NROW(idata$O), x$A$ncol)
+  are_equal(NROW(x$O), x$A$ncol)
 
   is.number(x$O$coefficient)
   is.number(x$O$lb)
