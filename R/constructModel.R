@@ -23,7 +23,7 @@ constructObjective <- function(x, ...){
 # Construct model file -----
 #' @export
 constructModel.file_mode <- function(x, ...){
-  checkInputs(x)
+  checkInputs_file_mode(x)
   x <- x$config
   mod <- readModelFile(x$filePath, type = x$fileType)
   constraints <- do.call(L_constraint, mod$constraints)
@@ -48,7 +48,7 @@ constructModel.file_mode <- function(x, ...){
 # If the manual input UI creates a temp file in the CPLEX_LP format, and returns a path to it
 #' @export
 constructModel.manual_mode <- function(x, ...){
-  checkInputs(x)
+  #checkInputs_manual_mode(x)
   manualInput = Filter(Negate(is.null), list(
     constraints = x$config$constraints,
     objective = x$config$objective,
@@ -71,7 +71,7 @@ constructModel.manual_mode <- function(x, ...){
 #' @export
 constructModel.matrix_mode <- function(x, ...){
   idata <- processData(x$inputs)
-  checkInputs(idata)
+  checkInputs_matrix_mode(idata)
   if ("Q" %in% names(idata)){
     objective <- Q_objective(Q = idata$Q, L = idata$O$coefficient)
   } else {

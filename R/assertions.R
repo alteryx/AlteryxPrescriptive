@@ -33,7 +33,7 @@ checkInputs_matrix_mode <- function(x, ...){
 
 
 #' @export
-checkInputs.file_mode <- function(x, ...){
+checkInputs_file_mode <- function(x, ...){
   fileSelected = x$config$filePath
   assert_that(
     is.readable(fileSelected)
@@ -42,10 +42,10 @@ checkInputs.file_mode <- function(x, ...){
 
 
 #' @export
-checkInputs.manual_mode <- function(x, ...){
+checkInputs_manual_mode <- function(x, ...){
   config <- x$config
   Objective <- config$objective
-  FieldList <- config$fieldList
+  FieldList <- config$constraints
 
   assert_that(
     not_empty(FieldList),

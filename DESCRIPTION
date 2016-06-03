@@ -31,7 +31,8 @@ Imports:
   jsonlite,
   DT,
   plyr,
-  commonmark
+  commonmark,
+  assertthat
 Suggests:
   testthat,
   gurobi,
