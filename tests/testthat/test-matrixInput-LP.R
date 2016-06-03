@@ -1,4 +1,4 @@
-context("matrixInput")
+context("matrixInput constraints as rows")
 
 ## Mock up configuration and inputs  ----
 config <- list(
