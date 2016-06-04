@@ -3,6 +3,9 @@
 #' @param out output from AlteryxSolve
 #' @export
 makeVariableReport <- function(out){
+  if (out$status$code == 1){
+    return(getStatusMessage(out))
+  }
   typs <- ROI::types(out$OP)
   d <- data.frame(
     Variable = out$lp_attr$objective_vars_names,
@@ -44,16 +47,35 @@ makeConstraintReport <- function(out){
 #' @export
 makeInteractiveReport <- function(out, nOutput = 3, ...){
   requireNamespace("AlteryxRviz", quietly = TRUE)
+  if (out$status$code == 1){
+    iout <- keen_dash(
+      Navbar(paste('Optimization -', out$status$msg$message),
+        navItem(icon('play'), 'Tour', href='#')
+      )
+    )
+    renderInComposer(iout, nOutput = nOutput, ...)
+    return()
+  }
   myTableClass = 'table table-condensed table-striped'
+  noteMain = "This interactive dashboard provides a summary of the optimization problem and the optimal solution."
+  noteSummary = "This table summarizes the optimization problem and the optimal solution. It displays summary statistics about the problem as well as the optimal value of the objective function."
+  noteVar = "This table shows the decision variables and their final values in the optimal solution. Use the search boxes to filter the table based on a column."
+  noteConstraints = "This tables shows the constraints and their final values in the optimal solution. Use the search boxes to filter the table based on a column"
+  footNote = "Use the search boxes below the headers to filter the table based on the values in a column."
   tour = intro(list(
-    list(intro = 'Optimization'),
+    list(intro = noteMain),
     list(
-      intro = "Variables",
+      intro = noteSummary,
+      element = JS("document.querySelector('#summary')"),
+      numberPosition = 'right'
+    ),
+    list(
+      intro = noteVar,
       element = JS("document.querySelector('#variables')"),
       numberPosition = 'left'
     ),
     list(
-      intro = 'Constraints',
+      intro = noteConstraints,
       element = JS("document.querySelector('#constraints')"),
       position = "auto"
     )
@@ -129,9 +151,9 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
       background = JS("Math.abs(value) > 0 ? 'white' : 'lightpink'")
     )
 
-  title1 = panel_title("Decision Variables", "These are variables", 'tooltip1b')
+  title1 = panel_title("Decision Variables", noteVar, 'tooltip1b')
   panel1 = Panel(c(12, 8), d3,
-    title1, id = 'variables'
+    title1, footNote, id = 'variables'
   )
   A = getProblemSummary(out)
   A[1,'Value'] = sprintf(
@@ -150,13 +172,14 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
   optimText <- commonmark::markdown_html(capture.output(out$OP)[-1])
   panel1a = Panel(c(12, 4),
     summaryReport,
-    panel_title('Solution Summary', optimText, 'dummy')
+    panel_title('Solution Summary', optimText, 'dummy'),
+    id = "summary"
   )
   title2 = panel_title(
-    "Constraints", "These are constraints", "tooltip2b"
+    "Constraints", noteConstraints, "tooltip2b"
   )
   panel2 = Panel(c(12, 12), tags$div(class = 'wrapper', d5),
-    title2, id = 'constraints'
+    title2, footNote, id = 'constraints'
   )
 
   objective_function = list(
@@ -226,6 +249,9 @@ getProblemSummary <- function(out){
 #' @importFrom plyr ldply
 #' @export
 makeDataOutput <- function(out, format = 'pipe'){
+  if (out$status$code == 1){
+    return(getStatusMessage(out))
+  }
   d1 = list(
     summary = getProblemSummary(out),
     variables = makeVariableReport(out),
@@ -273,11 +299,8 @@ getProblemType <- function(out){
   }
 }
 
-
-
-
-
-
-
-
-
+getStatusMessage <- function(out){
+  x <- unclass(out$status$msg)
+  d <- data.frame(name = names(x), value = unname(sapply(x, '[[', 1)))
+  return(d)
+}
