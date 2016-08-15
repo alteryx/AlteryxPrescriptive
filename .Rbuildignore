@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 .log
 ^LICENSE
+^\.travis\.yml$
