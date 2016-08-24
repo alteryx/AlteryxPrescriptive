@@ -70,7 +70,7 @@ constructModel.manual_mode <- function(x, ...){
 
 #' @export
 constructModel.matrix_mode <- function(x, ...){
-  idata <- processData(x$inputs)
+  idata <- processData(x$inputs, x$config)
   checkInputs_matrix_mode(idata)
   if ("Q" %in% names(idata)){
     objective <- Q_objective(Q = idata$Q, L = idata$O$coefficient)
