@@ -46,17 +46,20 @@ df2matVar <- function(inputs){
 }
 
 df2matCon <- function(inputs){
+  # matCols: columns with numeric values, i.e. numbers in constraint equations
   matCols <- setdiff(names(inputs$A), c("constraint", "dir", "rhs", "description"))
-  if (!("B" %in% names(inputs))) {
-    if (!('constraint' %in% names(inputs$A))){
-      inputs$A <- cbind(constraint = paste0("C", 1:NROW(inputs$A)), inputs$A)
-    }
-    B <- inputs$A[,!names(inputs$A) %in% matCols, drop = F]
-    A <- as.matrix(inputs$A[,matCols,drop = F])
-    rownames(A) <- inputs$A$constraint
-    inputs$A <- A
-    inputs$B <- factor2char(B)
+
+  # Add constraint names "C1, C2 ..." if it doesn't exist in Input A
+  if (!('constraint' %in% names(inputs$A))){
+    inputs$A <- cbind(constraint = paste0("C", 1:NROW(inputs$A)), inputs$A)
   }
+  if (!("B" %in% names(inputs))) {
+  B <- inputs$A[,!names(inputs$A) %in% matCols, drop = F]
+  inputs$B <- factor2char(B)
+  }
+  A <- as.matrix(inputs$A[,matCols,drop = F])
+  rownames(A) <- inputs$A$constraint
+  inputs$A <- A
   inputs$A[is.na(inputs$A)] <- 0
   inputs$A <- as.simple_triplet_matrix(inputs$A)
   inputs
@@ -101,7 +104,8 @@ fixMatrixO <- function(O){
 #'
 #' @param O A data.frame, original O matrix from input Anchor O.
 #' @param displayFlag A boolean, if display field map for Input O in the UI.
-inferO <- function(O, displayFlag) {
+inferO <- function(O, config) {
+  displayFlag <- config$displayFieldMapO
   r <- c("variable", "coefficient", "lb", "ub", "type")
   names(r) <- config[c("nameVar", "nameCoef", "nameLower", "nameUpper", "nameType")]
   if (displayFlag) {
@@ -189,12 +193,16 @@ inferB <- function(B) {
 }
 
 processData <- function(inputs, config){
+  if ("displayFieldMapO" %in% names(config) && config$displayFieldMapO) {
+    inputs$O <- inferO(inputs$O, config)
+  }
+  if ("constraintMode" %in% names(config)) {
+    inputs$A <- inferA(inputs$A, config$constraintMode)
+  }
+  inputs$B <- inferB(inputs$B)
+
   matType <- detectMatrixType(inputs$A)
   inputs <- lapply(inputs, factor2char)
-  inputs$O <- inferO(inputs$O, config$displayFieldMapO)
-  inputs$B <- inferB(inputs$B)
-  inputs$A <- inferA(inputs$A, config$constraintMode)
-
   inputs$O <- fixMatrixO(inputs$O)
   nVar = NROW(inputs$O)
   if (matType == "slam"){
