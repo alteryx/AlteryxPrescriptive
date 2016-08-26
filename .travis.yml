@@ -6,5 +6,4 @@ cache: packages
 addons:
   apt:
     packages:
-      - glpk
-      - r-cran-glpk
+    - libglpk-dev
