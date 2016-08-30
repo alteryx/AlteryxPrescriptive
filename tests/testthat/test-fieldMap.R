@@ -1,3 +1,5 @@
+context('Field Mapping works correctly')
+
 config <- list(
   inputMode = "matrix",
   problemType = "lp",
@@ -38,3 +40,7 @@ inputs$B <- data.frame(
 payload <- list(config = config, inputs = inputs)
 
 sol <- AlteryxSolve(payload)
+
+test_that("Field Mapping works correctly", {
+  expect_equal(sol$objval, 21)
+})

@@ -1,3 +1,5 @@
+context("matrix input, basic")
+
 config <- list(
   inputMode = "matrix",
   problemType = "lp",
@@ -31,3 +33,7 @@ inputs$B <- data.frame(
 payload <- list(config = config, inputs = inputs)
 
 sol <- AlteryxSolve(payload)
+
+test_that("Matrix Input, Basic LP", {
+  expect_equal(sol$objval, 21)
+})

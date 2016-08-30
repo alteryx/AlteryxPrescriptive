@@ -40,4 +40,6 @@ input$Q <- data.frame(
 payload <- list(config = config, inputs = input)
 sol <- AlteryxSolve(payload)
 
-
+test_that("Field Mapping works correctly", {
+  expect_equal(sol$objval, -0.000397808)
+})
