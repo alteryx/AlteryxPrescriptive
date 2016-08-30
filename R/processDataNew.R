@@ -103,7 +103,7 @@ fixMatrixO <- function(O){
 #' Infer column names for Input O to "variable", "coefficient", "lb", "ub", "type"
 #'
 #' @param O A data.frame, original O matrix from input Anchor O.
-#' @param displayFlag A boolean, if display field map for Input O in the UI.
+#' @param config configuration object as a list.
 inferO <- function(O, config) {
   displayFlag <- config$displayFieldMapO
   r <- c("variable", "coefficient", "lb", "ub", "type")
@@ -145,12 +145,14 @@ inferA <- function(A, constrMode) {
 #'
 #' @param B A data.frame, original B matrix from input Anchor B
 #' @examples
-#' B <- data.frame(
-#' z = c('A', 'B', 'C'),
-#' x = c(">=", "<=", "=="),
-#' y = c(1, 2, 3)
-#' )
-#' inferB(B)
+#' \dontrun{
+#'  B <- data.frame(
+#'   z = c('A', 'B', 'C'),
+#'   x = c(">=", "<=", "=="),
+#'   y = c(1, 2, 3)
+#'  )
+#'  inferB(B)
+#' }
 inferB <- function(B) {
   n = ncol(B)
   # infer rhs
