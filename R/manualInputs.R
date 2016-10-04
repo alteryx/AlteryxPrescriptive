@@ -21,6 +21,8 @@ makeCPLEXFile <- function(x){
     paste(sapply(f, '[[', 'fieldName'), collapse = ' ')
   }
   general <- find_type('General')
+  integer <- find_type('Integer')
+  general <- paste(general, integer, collapse = ' ')
   binary <- find_type('Binary')
   sprintf(tpl, ptype, obj, constraints, bounds, general, binary)
 }
