@@ -201,7 +201,7 @@ processData <- function(inputs, config){
   if ("constraintMode" %in% names(config)) {
     inputs$A <- inferA(inputs$A, config$constraintMode)
   }
-  inputs$B <- inferB(inputs$B)
+  if (!is.null(inputs$B)) inputs$B <- inferB(inputs$B)
 
   matType <- detectMatrixType(inputs$A)
   inputs <- lapply(inputs, factor2char)
