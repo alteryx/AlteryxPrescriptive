@@ -23,7 +23,6 @@ Imports:
   ROI.plugin.glpk,
   ROI.plugin.quadprog,
   slam,
-  glpkAPI,
   htmltools,
   htmlwidgets,
   AlteryxRviz,
