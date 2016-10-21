@@ -1,10 +1,10 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: R
-sudo: true
+sudo: false
 cache: packages
+r_packages: Rglpk
 addons:
   apt:
     packages:
     - libglpk-dev
-r_binary_packages: glpkAPI
