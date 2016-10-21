@@ -7,4 +7,4 @@ addons:
   apt:
     packages:
     - libglpk-dev
-r_binary_packages: glpkApi
+r_binary_packages: glpkAPI
