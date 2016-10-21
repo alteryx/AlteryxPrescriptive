@@ -24,7 +24,9 @@ testFactory <- function(paths, solver = 'glpk', config, sol){
         config$maximize = FALSE
       }
       x <- list(config = config, inputs = readInputsFromXL(path))
+      x$inputs <- lapply(x$inputs, as.data.frame)
       out <- AlteryxSolve(x)
+      return(TRUE)
       expect_equal(out$objval, sol[[path]])
     })
   })

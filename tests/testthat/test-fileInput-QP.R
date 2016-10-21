@@ -14,6 +14,7 @@ payload = list(config = config, inputs = NULL)
 
 
 test_that('Quadprog solves Simple QP', {
+  library(ROI)
   payload$config$filePath = getSampleData('simple_qp.lp')
   sol <- AlteryxSolve(payload)
   expect_equal(sol$objval, 60)
@@ -32,6 +33,7 @@ test_that('Gurobi solves Simple QP', {
 })
 
 test_that('Gurobi solves Complex QP', {
+  library(ROI)
   skip_on_travis()
   skip_if_not_installed('gurobi')
   library(gurobi)

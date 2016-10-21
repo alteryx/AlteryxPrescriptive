@@ -37,9 +37,11 @@ input$Q <- data.frame(
   GOOG = c(0.000268932719505676,0.000253165846767602,	7.11285187509678e-05,	0.000120543449816519,	0.00024638404509849)
 )
 
-payload <- list(config = config, inputs = input)
-sol <- AlteryxSolve(payload)
+
 
 test_that("Field Mapping works correctly", {
+  library(ROI)
+  payload <- list(config = config, inputs = input)
+  sol <- AlteryxSolve(payload)
   expect_equal(sol$objval, -0.000397808)
 })

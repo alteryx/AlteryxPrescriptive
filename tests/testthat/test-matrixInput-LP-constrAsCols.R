@@ -31,10 +31,10 @@ inputs$B <- data.frame(
 
 
 # Assemble payload
-payload  <- list(config = config, inputs = inputs)
-sol <- AlteryxSolve(payload)
-
-x <- payload
-class(x) <- c(class(x), paste0(x$config$inputMode, "_mode"))
-idata <- AlteryxPrescriptive:::processData(x$inputs)
+# payload  <- list(config = config, inputs = inputs)
+# sol <- AlteryxSolve(payload)
+#
+# x <- payload
+# class(x) <- c(class(x), paste0(x$config$inputMode, "_mode"))
+# idata <- AlteryxPrescriptive:::processData(x$inputs)
 
