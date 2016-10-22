@@ -8,3 +8,7 @@ addons:
   apt:
     packages:
     - libglpk-dev
+repos:
+  CRAN: https://cloud.r-project.org
+  alteryx: http://alteryx.github.io/drat
+
