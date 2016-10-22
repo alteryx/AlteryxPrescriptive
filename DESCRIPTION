@@ -33,3 +33,5 @@ Imports:
   assertthat
 Suggests:
   testthat
+Enhances:
+  gurobi

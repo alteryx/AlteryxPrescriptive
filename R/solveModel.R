@@ -104,6 +104,7 @@ solveModel.gurobi <- function(x, solver = 'gurobi', lp_attr){
 #'
 #' @keywords internal
 solve_gurobi <- function(lp, lp_attr) {
+  requireNamespace('gurobi', quietly = TRUE)
   bounds <- getBounds_gurobi(lp)
   Q_ <- terms(objective(lp))$Q
   model <- list(
