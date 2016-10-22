@@ -10,5 +10,5 @@ addons:
     - libglpk-dev
 repos:
   CRAN: https://cloud.r-project.org
-  alteryx: http://alteryx.github.io/drat
+  alteryx: https://alteryx.github.io/drat
 
