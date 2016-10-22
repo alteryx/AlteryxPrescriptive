@@ -32,7 +32,4 @@ Imports:
   commonmark,
   assertthat
 Suggests:
-  testthat,
-  gurobi,
-  Rsymphony,
-  ROI.plugin.symphony
+  testthat
