@@ -61,40 +61,40 @@ getBounds_gurobi <- function(mod){
 
 # Get bounds for glpkAPI
 # mod: list, lp$bounds where lp is OP object from ROI
-getBounds_glpkAPI <- function(mod, n_objective_vars) {
-  lb <- rep(0, n_objective_vars)
-  ub <- rep(Inf, n_objective_vars)
-
-  ind_lb <- mod$bounds$lower$ind
-  val_lb <- mod$bounds$lower$val
-  ind_ub <- mod$bounds$upper$ind
-  val_ub <- mod$bounds$upper$val
-
-  lb[ind_lb] <- val_lb
-  ub[ind_ub] <- val_ub
-
-  type <- rep(0, n_objective_vars)
-  for (i in 1:n_objective_vars) {
-    if (lb[i] == -Inf) {
-      if (ub[i] == Inf) {
-        type[i] <- GLP_FR
-      } else {
-        type[i] <- GLP_UP
-      }
-    } else {
-      if (ub[i] == Inf) {
-        type[i] <- GLP_LO
-      } else {
-        if(ub[i] > lb[i]) {
-          type[i] <- GLP_DB
-        } else if(ub[i] == lb[i]) {
-          type[i] <- GLP_FX
-        } else {
-          stop("Error: decision variable's upper bound is less than its lower bound!")
-        }
-      }
-    }
-  }
-
-  list(lb = lb, ub = ub, type = type)
-}
+# getBounds_glpkAPI <- function(mod, n_objective_vars) {
+#   lb <- rep(0, n_objective_vars)
+#   ub <- rep(Inf, n_objective_vars)
+#
+#   ind_lb <- mod$bounds$lower$ind
+#   val_lb <- mod$bounds$lower$val
+#   ind_ub <- mod$bounds$upper$ind
+#   val_ub <- mod$bounds$upper$val
+#
+#   lb[ind_lb] <- val_lb
+#   ub[ind_ub] <- val_ub
+#
+#   type <- rep(0, n_objective_vars)
+#   for (i in 1:n_objective_vars) {
+#     if (lb[i] == -Inf) {
+#       if (ub[i] == Inf) {
+#         type[i] <- GLP_FR
+#       } else {
+#         type[i] <- GLP_UP
+#       }
+#     } else {
+#       if (ub[i] == Inf) {
+#         type[i] <- GLP_LO
+#       } else {
+#         if(ub[i] > lb[i]) {
+#           type[i] <- GLP_DB
+#         } else if(ub[i] == lb[i]) {
+#           type[i] <- GLP_FX
+#         } else {
+#           stop("Error: decision variable's upper bound is less than its lower bound!")
+#         }
+#       }
+#     }
+#   }
+#
+#   list(lb = lb, ub = ub, type = type)
+# }
