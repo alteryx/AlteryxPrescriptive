@@ -277,6 +277,8 @@ makeDataOutput <- function(out, format = 'pipe'){
   }
 }
 
+#' @importFrom stats setNames terms
+#' @importFrom utils capture.output write.table
 df2pipe <- function(df, quote = F, ...){
   capture.output(write.table(df, sep = "|", quote = quote, row.names = F, ...))
 }
