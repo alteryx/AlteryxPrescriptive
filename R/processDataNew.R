@@ -125,6 +125,14 @@ inferA <- function(A, constrMode) {
     # if (is.null(constraint) || length(constraint) == 0) {
     #   stop("Error: lack of constraint column in Input A.")
     # } else
+    notDir <- function(x) {
+      if (tolower(x) == "dir") {
+        FALSE
+      } else {
+        TRUE
+      }
+    }
+    constraint <- Filter(notDir, constraint)
     if (length(constraint) > 1) {
       stop("Error: there shouldn't be any other string type of columns except constraint.")
     }
