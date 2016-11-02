@@ -90,5 +90,5 @@ test_that("Constraint in rows with OAB inputs", {
   payload <- list(config = config, inputs = inputs)
 
   sol <- AlteryxSolve(payload)
-  expect_equal(sol$objval, 21)
+  expect_equal(sol$objval, 29)
 })
