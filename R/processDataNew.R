@@ -120,19 +120,10 @@ inferO <- function(O, config) {
 #' @param constrMode A string, constraint mode.
 inferA <- function(A, constrMode) {
   if (constrMode == 'conInRow') {
-    constraint <- names(Filter(function(x){return(!isTRUE(x))},
-                               sapply(A, is.numeric)))
-    # if (is.null(constraint) || length(constraint) == 0) {
-    #   stop("Error: lack of constraint column in Input A.")
-    # } else
-    notDir <- function(x) {
-      if (tolower(x) == "dir") {
-        FALSE
-      } else {
-        TRUE
-      }
-    }
-    constraint <- Filter(notDir, constraint)
+    constraint <- names(
+      Filter(function(x){return(!isTRUE(x))}, sapply(A, is.numeric))
+    )
+    constraint <- Filter(function(x){tolower(x) != "dir"}, constraint)
     if (length(constraint) > 1) {
       stop("Error: there shouldn't be any other string type of columns except constraint.")
     }
