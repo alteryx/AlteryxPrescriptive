@@ -77,11 +77,19 @@ constructModel.matrix_mode <- function(x, ...){
   } else {
     objective <- as.vector(idata$O$coefficient)
   }
-  constraints <- L_constraint(
-    L = idata$A,
-    dir = idata$B$dir,
-    rhs = idata$B$rhs
+  tryCatch(
+  {
+    constraints <- L_constraint(
+      L = idata$A,
+      dir = idata$B$dir,
+      rhs = idata$B$rhs
+    )
+  },
+    error = function(err){
+      message("ERROR: constraint mode for Input Anchor A may not be selected correctly!")
+    }
   )
+
   op_obj <- OP(
     objective = objective,
     constraints = constraints,
