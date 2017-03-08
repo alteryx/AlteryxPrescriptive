@@ -109,7 +109,9 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
         pageLength = 5,
         #initComplete = styleTable,
         escape = FALSE
-      )
+      ),
+      width = '100%',
+      height = 'auto'
     ) %>%
     #formatSignif("Value") %>%
     DT::formatStyle('Value',
@@ -137,7 +139,9 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
         #initComplete = styleTable,
         escape = FALSE,
         pageLength = 5
-      )
+      ),
+      width = '100%',
+      height = 'auto'
     ) %>%
     #DT::formatSignif("Value", 3) %>%
     #DT::formatSignif("Slack", 3) %>%
@@ -167,7 +171,9 @@ makeInteractiveReport <- function(out, nOutput = 3, ...){
     options = list(
       sDom = 't',
       bSort = F
-    )
+    ),
+    width = '100%',
+    height = 'auto'
   )
   optimText <- commonmark::markdown_html(capture.output(out$OP)[-1])
   panel1a = Panel(c(12, 4),
